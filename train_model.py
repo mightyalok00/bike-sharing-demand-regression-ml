@@ -2,31 +2,45 @@ from __future__ import annotations
 
 import argparse
 import logging
-from pathlib import Path
 
 import joblib
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import KFold, cross_val_score, train_test_split, RandomizedSearchCV, GridSearchCV
-from sklearn.metrics import mean_squared_error
+from sklearn.model_selection import (
+    GridSearchCV,
+    KFold,
+    RandomizedSearchCV,
+    cross_val_score,
+    train_test_split,
+)
 
 from src.config import (
-    MODEL_DIR, REPORT_DIR, MODEL_PATH, COMPARISON_PATH, HOLDOUT_PATH, IMPORTANCE_PATH,
-    TRAIN_PATH, RANDOM_STATE, TEST_SIZE,
+    COMPARISON_PATH,
+    HOLDOUT_PATH,
+    IMPORTANCE_PATH,
+    MODEL_DIR,
+    MODEL_PATH,
+    RANDOM_STATE,
+    REPORT_DIR,
+    TEST_SIZE,
+    TRAIN_PATH,
 )
-from src.data import load_csv, validate_train, basic_clean
+from src.data import basic_clean, load_csv, validate_train
+from src.evaluation import feature_importance_table, regression_metrics
 from src.features import prepare_features, split_feature_types
 from src.modeling import make_models, make_polynomial_pipeline
-from src.evaluation import regression_metrics, feature_importance_table
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s",
+)
 LOGGER = logging.getLogger(__name__)
 
 
 def parse_args():
-    p = argparse.ArgumentParser()
-    p.add_argument("--train", default=TRAIN_PATH)
-    return p.parse_args()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--train", default=TRAIN_PATH)
+    return parser.parse_args()
 
 
 def main():
@@ -59,13 +73,16 @@ def main():
 
     # Log target transformation.
     y_train_log = np.log1p(y_train)
-    y_holdout_log = np.log1p(y_holdout)
 
     for name, model in models.items():
         LOGGER.info("Evaluating %s", name)
         scores = cross_val_score(
-            model, X_train, y_train_log,
-            scoring="neg_root_mean_squared_error", cv=cv, n_jobs=-1
+            model,
+            X_train,
+            y_train_log,
+            scoring="neg_root_mean_squared_error",
+            cv=cv,
+            n_jobs=-1,
         )
         model.fit(X_train, y_train_log)
 
@@ -91,8 +108,13 @@ def main():
         "model__min_samples_leaf": [1, 2, 4],
     }
     rf_search = RandomizedSearchCV(
-        rf, rf_grid, n_iter=6, scoring="neg_root_mean_squared_error",
-        cv=cv, random_state=RANDOM_STATE, n_jobs=-1
+        rf,
+        rf_grid,
+        n_iter=6,
+        scoring="neg_root_mean_squared_error",
+        cv=cv,
+        random_state=RANDOM_STATE,
+        n_jobs=-1,
     )
     rf_search.fit(X_train, y_train_log)
 
@@ -103,8 +125,11 @@ def main():
         "model__max_depth": [2, 3, 4],
     }
     gb_search = GridSearchCV(
-        gb, gb_grid, scoring="neg_root_mean_squared_error",
-        cv=cv, n_jobs=-1
+        gb,
+        gb_grid,
+        scoring="neg_root_mean_squared_error",
+        cv=cv,
+        n_jobs=-1,
     )
     gb_search.fit(X_train, y_train_log)
 
@@ -136,7 +161,11 @@ def main():
     final_model.fit(X_all, np.log1p(y))
 
     joblib.dump(
-        {"model": final_model, "target_transform": "log1p_expm1", "model_name": best_name},
+        {
+            "model": final_model,
+            "target_transform": "log1p_expm1",
+            "model_name": best_name,
+        },
         MODEL_PATH,
     )
 
