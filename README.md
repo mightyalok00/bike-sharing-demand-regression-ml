@@ -51,7 +51,6 @@ The selected showcase image is the **full BikePulse prediction screen**: it clea
   <img src="docs/images/bikepulse-dashboard.jpg" alt="BikePulse Demand Predictor Streamlit application" width="100%"/>
 </p>
 
-> **Screenshot:** Add the selected Streamlit screenshot at `docs/images/bikepulse-dashboard.jpg` so GitHub renders the preview above.
 
 ---
 
