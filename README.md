@@ -28,7 +28,7 @@ The project demonstrates a complete regression workflow:
 
 **data validation → feature engineering → leakage prevention → preprocessing → model comparison → cross-validation → hyperparameter tuning → model serialization → interactive prediction**
 
-The deployed application allows users to configure calendar, weather and environmental conditions and generate an hourly bike-demand prediction.
+The deployed application lets users configure calendar, weather and environmental conditions and generate an hourly bike-demand prediction.
 
 ## 🚀 Live Application
 
@@ -39,14 +39,14 @@ The deployed application allows users to configure calendar, weather and environ
 The Streamlit application provides:
 
 - 🎛️ Interactive prediction controls
+- ⚡ Quick scenario presets
+- 🧠 Regression model selection
 - 📅 Date and time features
-- 🌦️ Season and weather scenarios
-- 🌡️ Temperature and environmental inputs
-- 🧠 Multiple regression model selection
+- 🌦️ Weather and season scenarios
+- 🌡️ Temperature, humidity and wind inputs
 - 🔮 Hourly demand prediction
 - 📊 Demand-level interpretation
 - 🛡️ Target-leakage protection
-- 🌑 Streamlit interface optimized for interactive use
 
 > **Deployment:** Streamlit Community Cloud  
 > **Main file:** `app.py`
@@ -69,7 +69,7 @@ This makes the prediction workflow more representative of a real forecasting sce
 
 ## 🧠 Regression Models
 
-The project compares **8 regression model types**:
+The project compares **8 regression approaches**:
 
 | Model | Purpose |
 |---|---|
@@ -119,7 +119,7 @@ The training workflow additionally performs hyperparameter search for:
               Hyperparameter Tuning
                          │
                          ▼
-                 Model Evaluation
+                 Holdout Evaluation
                          │
                          ▼
               Joblib Model Serialization
@@ -166,9 +166,17 @@ Models are evaluated using:
 - **Cross-validation RMSE**
 - **Holdout validation**
 
-The training workflow also uses a `log1p` target transformation and `expm1` inverse transformation to model the highly skewed demand target.
+The training workflow also uses a `log1p` target transformation and `expm1` inverse transformation to model the skewed demand target.
 
-> Benchmark numbers are intentionally not hard-coded into this README. Run the training workflow against the local competition dataset to generate reproducible metrics.
+### Reproducible benchmark
+
+The repository intentionally does **not** invent benchmark numbers. Run the training pipeline on the Kaggle dataset to generate:
+
+- `reports/model_comparison.csv`
+- `reports/holdout_metrics.csv`
+- `reports/feature_importance.csv`
+
+Once a benchmark is generated, it can be added to this section with the exact training configuration used.
 
 ---
 
@@ -211,7 +219,7 @@ bike-sharing-demand-regression-ml/
 │   ├── config.py             # Project configuration
 │   ├── data.py               # Loading, cleaning and validation
 │   ├── features.py           # Feature engineering
-│   ├── modeling.py            # Model and pipeline definitions
+│   ├── modeling.py           # Model and pipeline definitions
 │   ├── evaluation.py         # Metrics and feature importance
 │   └── __init__.py
 │
@@ -238,14 +246,12 @@ bike-sharing-demand-regression-ml/
 
 ### 1. Clone the repository
 
-```bash
+```powershell
 git clone https://github.com/mightyalok00/bike-sharing-demand-regression-ml.git
 cd bike-sharing-demand-regression-ml
 ```
 
 ### 2. Create a virtual environment
-
-**Windows PowerShell**
 
 ```powershell
 python -m venv .venv
@@ -390,8 +396,6 @@ CI performs:
 4. Pytest with coverage
 5. Python compilation validation
 
-This keeps the core ML pipeline and Streamlit project continuously checked.
-
 ---
 
 ## 🔐 Engineering Practices
@@ -421,7 +425,14 @@ This project follows several production-oriented practices:
 - [x] Automated CI tests
 - [x] MIT license
 - [ ] Add verified benchmark table from a reproducible training run
+- [ ] Add prediction analytics / model explainability
 - [ ] Add production monitoring
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome. Please see **[CONTRIBUTING.md](CONTRIBUTING.md)** for the development workflow, testing expectations and pull-request checklist.
 
 ---
 
