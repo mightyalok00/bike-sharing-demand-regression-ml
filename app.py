@@ -113,6 +113,11 @@ bundle = load_model_bundle()
 saved_model = bundle["model"]
 saved_model_name = bundle.get("model_name", "Unknown")
 
+# The Kaggle Bike Sharing training target ranges from 1 to 977 rentals/hour.
+# This guard prevents weaker interactive models from displaying impossible
+# extrapolations while keeping the raw prediction visible in the warning below.
+OBSERVED_TARGET_MAX = 977.0
+
 
 @st.cache_resource
 def load_model_catalog():
@@ -384,10 +389,14 @@ with tab1:
         )
         try:
             X = prepare_features(raw)
-            pred = max(0.0, float(np.expm1(selected_model.predict(X)[0])))
+            raw_log_prediction = float(selected_model.predict(X)[0])
+            raw_pred = max(0.0, float(np.expm1(raw_log_prediction)))
+            pred = min(raw_pred, OBSERVED_TARGET_MAX)
         except Exception as exc:
             st.error(f"❌ Prediction failed: {exc}")
             st.stop()
+
+        was_capped = raw_pred > OBSERVED_TARGET_MAX
 
         if pred < 100:
             level, icon, advice = (
@@ -423,32 +432,40 @@ with tab1:
         )
         st.write("")
 
+        if was_capped:
+            st.warning(
+                f"⚠️ {model_name} produced an extrapolated raw estimate of "
+                f"{raw_pred:,.0f} rentals/hour. The app caps the displayed value "
+                f"at the observed training maximum of {OBSERVED_TARGET_MAX:,.0f}."
+            )
+
         st.markdown("#### 📊 Demand intensity")
         demand_chart = pd.DataFrame(
             {
                 "Predicted rentals": [pred],
                 "High-demand threshold": [600],
-                "Very-high reference": [1000],
+                "Observed max": [OBSERVED_TARGET_MAX],
             },
             index=["Current scenario"],
         )
         st.bar_chart(demand_chart, height=220)
         st.caption(
-            "Reference markers help put the predicted hourly demand into context; "
-            "they are not model outputs."
+            "Reference markers show the project's observed demand range; "
+            "they are not additional model outputs."
         )
 
         a, b, c = st.columns(3)
         a.metric("📈 Demand level", level)
         b.metric("🎯 Model", model_name)
-        c.metric("🛡️ Safety", "Non-negative output")
+        c.metric("🛡️ Output guard", "0–977 rentals/hour")
 
         with st.expander("🔎 View model input"):
             st.dataframe(raw, width="stretch", hide_index=True)
 
         st.caption(
-            "ℹ️ The prediction uses the same feature-engineering path as training "
-            "and is clipped at zero."
+            "ℹ️ The prediction uses the same feature-engineering path as training. "
+            "Negative predictions are clipped at zero and extrapolated values above "
+            "the observed training maximum are capped."
         )
 
 with tab2:
