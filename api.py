@@ -74,13 +74,29 @@ class PredictionRequest(BaseModel):
         "Weekend afternoon",
         "Night / low demand",
     ] = "Custom"
-    season: Literal[1, 2, 3, 4] = Field(..., description="1=Spring, 2=Summer, 3=Fall, 4=Winter.")
+    season: Literal[1, 2, 3, 4] = Field(
+        ...,
+        description="1=Spring, 2=Summer, 3=Fall, 4=Winter.",
+    )
     holiday: Literal[0, 1] = 0
     workingday: Literal[0, 1] = 1
-    weather: Literal[1, 2, 3, 4] = Field(..., description="1=Clear, 2=Cloudy, 3=Light rain/snow, 4=Heavy weather.")
+    weather: Literal[1, 2, 3, 4] = Field(
+        ...,
+        description="1=Clear, 2=Cloudy, 3=Light rain/snow, 4=Heavy weather.",
+    )
     temp: float = Field(..., ge=-10, le=45, description="Temperature in °C.")
-    atemp: float = Field(..., ge=-10, le=50, description="Feels-like temperature in °C.")
-    humidity: float = Field(..., ge=0, le=100, description="Relative humidity percentage.")
+    atemp: float = Field(
+        ...,
+        ge=-10,
+        le=50,
+        description="Feels-like temperature in °C.",
+    )
+    humidity: float = Field(
+        ...,
+        ge=0,
+        le=100,
+        description="Relative humidity percentage.",
+    )
     windspeed: float = Field(..., ge=0, le=60, description="Wind speed.")
 
 
@@ -90,12 +106,14 @@ def load_model_bundle():
         return joblib.load(MODEL_PATH)
 
     from bootstrap_model import build_fallback_model
+
     return build_fallback_model()
 
 
 @lru_cache(maxsize=1)
 def load_model_catalog():
     from bootstrap_model import build_model_catalog
+
     return build_model_catalog()
 
 
@@ -164,17 +182,21 @@ def models():
 def predict(request: PredictionRequest):
     selected_model, active_model_name = get_selected_model(request.regression_model)
 
-    raw = pd.DataFrame([{
-        "datetime": request.datetime,
-        "season": request.season,
-        "holiday": request.holiday,
-        "workingday": request.workingday,
-        "weather": request.weather,
-        "temp": request.temp,
-        "atemp": request.atemp,
-        "humidity": request.humidity,
-        "windspeed": request.windspeed,
-    }])
+    raw = pd.DataFrame(
+        [
+            {
+                "datetime": request.datetime,
+                "season": request.season,
+                "holiday": request.holiday,
+                "workingday": request.workingday,
+                "weather": request.weather,
+                "temp": request.temp,
+                "atemp": request.atemp,
+                "humidity": request.humidity,
+                "windspeed": request.windspeed,
+            }
+        ]
+    )
 
     X = prepare_features(raw)
     prediction = max(0.0, float(np.expm1(selected_model.predict(X)[0])))
