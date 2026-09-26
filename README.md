@@ -59,6 +59,7 @@ bike-sharing-demand-regression-ml/
 ├── generate_submission.py
 ├── requirements.txt
 ├── requirements-dev.txt
+├── pyproject.toml
 ├── Dockerfile
 ├── railway.toml
 ├── api.py
@@ -438,7 +439,7 @@ Every push to `main` and every pull request targeting `main` runs:
 4. Pytest with coverage
 5. Python compilation validation
 
-This keeps model utilities, API code, and feature-engineering changes continuously checked before they are considered production-ready.
+Ruff import sorting is configured in `pyproject.toml`, and CI pins the test/lint tool ranges used for reproducible checks. This keeps model utilities, API code, and feature-engineering changes continuously checked before they are considered production-ready.
 
 ## 🧭 Roadmap
 
@@ -453,8 +454,8 @@ This keeps model utilities, API code, and feature-engineering changes continuous
 - [x] Docker containerization
 - [x] MIT license for original code
 - [ ] Add verified benchmark table from a reproducible training run
-- [ ] Add automated CI tests
-- [ ] Add API integration tests
+- [x] Add automated CI tests
+- [x] Add API integration tests
 - [ ] Add production monitoring
 
 ## 👤 Author
