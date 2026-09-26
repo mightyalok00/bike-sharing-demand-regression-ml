@@ -271,6 +271,55 @@ These features help regression models represent recurring temporal patterns.
 
 ---
 
+## 📈 Dataset Analysis Results
+
+The following summary is based on the standard Kaggle **Bike Sharing Demand** training dataset used by this project. The training set contains **10,886 hourly observations and 12 original columns**. The target is `count`, total hourly bike rentals. The raw training data contains no missing values in the standard dataset. citeturn0search0turn3search2
+
+### Dataset profile
+
+| Metric | Result |
+|---|---:|
+| Training rows | 10,886 |
+| Original columns | 12 |
+| Test rows | 6,493 |
+| Target | `count` |
+| Target minimum | 1 |
+| Target maximum | 977 |
+| Target mean | 191.57 |
+| Target median | 145 |
+| Target standard deviation | 181.14 |
+| Target Q1 | 42 |
+| Target Q3 | 284 |
+
+### Target analysis
+
+| Calculated indicator | Result |
+|---|---:|
+| Mean − median | 46.57 rentals |
+| Mean / median | 1.32× |
+| Coefficient of variation | 94.56% |
+| Registered-user share of mean demand | 81.20% |
+| Casual-user share of mean demand | 18.80% |
+
+The difference between the mean (**191.57**) and median (**145**) and the high coefficient of variation (**94.56%**) show that hourly demand is strongly dispersed and right-skewed. This supports the project's use of a `log1p(count)` target transformation during model training. The underlying dataset statistics are independently reported from the standard Kaggle training file. citeturn3search0turn3search2
+
+### Feature statistics
+
+| Feature | Mean | Std | Min | Max |
+|---|---:|---:|---:|---:|
+| Temperature (`temp`) | 20.23°C | 7.79 | 0.82°C | 41.00°C |
+| Feels-like temperature (`atemp`) | 23.66°C | 8.47 | 0.76°C | 45.46°C |
+| Humidity | 61.89% | 19.25 | 0% | 100% |
+| Windspeed | 12.80 | 8.16 | 0 | 57.00 |
+| Casual rentals | 36.02 | 49.96 | 0 | 367 |
+| Registered rentals | 155.55 | 151.04 | 0 | 886 |
+
+These values describe the raw dataset before the project's feature engineering and leakage removal. The `casual` and `registered` columns are excluded from prediction features because they are components of the target and are not available as valid prediction inputs. citeturn3search1turn0search0
+
+> **Important:** These are dataset statistics, not model-performance benchmarks. Model RMSE, MAE, R² and cross-validation results should only be added after running this repository's `train_model.py` against the exact training dataset and configuration.
+
+---
+
 ## 📊 Model Evaluation
 
 Models are evaluated using:
