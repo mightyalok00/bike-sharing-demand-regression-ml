@@ -1,13 +1,13 @@
 # 🚲 BikePulse — Bike Sharing Demand Prediction
 
 <p align="center">
-  <strong>End-to-end regression machine learning project for hourly bike rental demand forecasting.</strong><br/>
-  Built with Python, Scikit-learn and Streamlit.
+  <strong>End-to-end machine learning project for predicting hourly bike-rental demand.</strong><br/>
+  Python · Scikit-learn · Streamlit · GitHub Actions
 </p>
 
 <p align="center">
   <a href="https://bike-sharing-demand-regression-ml.streamlit.app/"><strong>🚀 Live Demo</strong></a> ·
-  <a href="https://github.com/mightyalok00/bike-sharing-demand-regression-ml"><strong>📦 GitHub</strong></a>
+  <a href="https://github.com/mightyalok00/bike-sharing-demand-regression-ml"><strong>📦 Repository</strong></a>
 </p>
 
 <p align="center">
@@ -20,321 +20,94 @@
 
 ---
 
-## 📌 Overview
+## ✨ What this project does
 
-**BikePulse** is a production-oriented machine learning project based on the **Kaggle Bike Sharing Demand** dataset.
+**BikePulse** predicts the number of bike rentals for a given hour from calendar, weather and environmental conditions.
 
-The project demonstrates a complete regression workflow:
+The project is a complete ML workflow rather than a notebook-only exercise:
 
-**data validation → feature engineering → leakage prevention → preprocessing → model comparison → cross-validation → hyperparameter tuning → model serialization → interactive prediction**
+**data validation → cleaning → leakage prevention → feature engineering → preprocessing → model comparison → cross-validation → hyperparameter tuning → evaluation → serialization → Streamlit deployment**
 
-The deployed application lets users configure calendar, weather and environmental conditions and generate an hourly bike-demand prediction.
+### 🚀 Live application
 
-## 🚀 Live Application
+**[Open BikePulse](https://bike-sharing-demand-regression-ml.streamlit.app/)**
 
-### BikePulse — Interactive Demand Predictor
+The app provides:
 
-**[Launch BikePulse](https://bike-sharing-demand-regression-ml.streamlit.app/)**
-
-The Streamlit application provides:
-
-- 🎛️ Interactive prediction controls
-- ⚡ Quick scenario presets
-- 🧠 Regression model selection
-- 📅 Date and time features
-- 🌦️ Weather and season scenarios
-- 🌡️ Temperature, humidity and wind inputs
-- 🔮 Hourly demand prediction
-- 📊 Demand-level interpretation
-- 🛡️ Target-leakage protection
-
-> **Deployment:** Streamlit Community Cloud  
-> **Main file:** `app.py`
+- Interactive date/time and weather inputs
+- Quick scenario presets
+- Multiple regression-model selection
+- Hourly demand prediction
+- Demand-level interpretation
+- Model analytics and feature importance
+- Benchmark metrics from the training report
+- Prediction safeguards for non-negative and out-of-range outputs
 
 ---
 
-## 🎯 Project Objective
+## 🎯 Project objective
 
-Predict the number of bike rentals for a given hour using information available before the rental outcome occurs.
+Predict hourly total bike rentals using information known before the rental outcome.
 
-The project specifically addresses **target leakage** by excluding post-outcome variables such as:
+The feature pipeline removes post-outcome fields:
 
-- `count`
-- `casual`
-- `registered`
+- **count**
+- **casual**
+- **registered**
 
-This makes the prediction workflow more representative of a real forecasting scenario.
-
----
-
-## 🧠 Regression Models
-
-The project compares **8 regression approaches**:
-
-| Model | Purpose |
-|---|---|
-| Linear Regression | Baseline linear relationship |
-| Polynomial Regression | Captures nonlinear relationships |
-| Ridge Regression | L2-regularized linear regression |
-| Lasso Regression | L1-regularized linear regression |
-| Elastic Net | L1 + L2 regularization |
-| Decision Tree Regression | Nonlinear rule-based modeling |
-| Random Forest Regression | Bagged tree ensemble |
-| Gradient Boosting Regression | Sequential boosted-tree ensemble |
-
-The training workflow additionally performs hyperparameter search for:
-
-- **Random Forest Regression**
-- **Gradient Boosting Regression**
+This prevents target leakage and keeps the deployed prediction interface aligned with the intended prediction task.
 
 ---
 
-## 🔬 Machine Learning Pipeline
+## 🧠 Machine-learning approach
 
-```text
-                 Kaggle / Local Data
-                         │
-                         ▼
-                 Data Validation
-                         │
-                         ▼
-                  Data Cleaning
-                         │
-                         ▼
-              Datetime Feature Engineering
-                         │
-                         ▼
-                Leakage Prevention
-                         │
-                         ▼
-             ColumnTransformer Pipeline
-                         │
-                         ▼
-               Regression Models
-                         │
-                         ▼
-                5-Fold Cross-Validation
-                         │
-                         ▼
-              Hyperparameter Tuning
-                         │
-                         ▼
-                 Holdout Evaluation
-                         │
-                         ▼
-              Joblib Model Serialization
-                         │
-                         ▼
-                 Streamlit Prediction
-```
+### Feature engineering
 
----
+The original datetime field is transformed into:
 
-## 🏗️ Architecture
-
-BikePulse separates the application layer, machine-learning pipeline and reusable data/model components.
-
-```text
-                    ┌─────────────────────────┐
-                    │   Kaggle Bike Dataset   │
-                    │ train.csv / test.csv    │
-                    └────────────┬────────────┘
-                                 │
-                                 ▼
-                    ┌─────────────────────────┐
-                    │   src/data.py            │
-                    │ Load • Clean • Validate  │
-                    └────────────┬────────────┘
-                                 │
-                                 ▼
-                    ┌─────────────────────────┐
-                    │   src/features.py        │
-                    │ Datetime • Cyclical      │
-                    │ Leakage-safe features   │
-                    └────────────┬────────────┘
-                                 │
-                                 ▼
-                    ┌─────────────────────────┐
-                    │   src/modeling.py        │
-                    │ Preprocessing pipelines │
-                    │ Regression estimators   │
-                    └────────────┬────────────┘
-                                 │
-                    ┌────────────┴────────────┐
-                    ▼                         ▼
-          ┌──────────────────┐      ┌──────────────────┐
-          │ train_model.py   │      │ tests/           │
-          │ CV • tuning •    │      │ Automated checks │
-          │ evaluation       │      └──────────────────┘
-          └────────┬─────────┘
-                   │
-                   ▼
-          ┌──────────────────┐
-          │ models/*.joblib  │
-          │ reports/*.csv    │
-          └────────┬─────────┘
-                   │
-                   ▼
-          ┌──────────────────┐
-          │     app.py       │
-          │ Streamlit UI     │
-          │ Prediction +     │
-          │ Analytics        │
-          └──────────────────┘
-```
-
-### Architecture principles
-
-- **Separation of concerns** — data, features, modeling and evaluation live in reusable modules.
-- **Leakage-safe training** — post-outcome target fields are removed before modeling.
-- **Pipeline-based preprocessing** — transformations are kept with the estimator workflow.
-- **Reproducible training** — fixed random state and documented commands.
-- **Artifact isolation** — generated models and reports are kept outside the source modules.
-- **Testable components** — core data, feature, evaluation and modeling utilities have automated tests.
-
----
-
-## ☁️ Deployment
-
-### Streamlit Community Cloud
-
-The production-facing demo is deployed as a **Streamlit Community Cloud** application.
-
-```text
-GitHub main branch
-       │
-       ▼
-Streamlit Community Cloud
-       │
-       ▼
-      app.py
-       │
-       ├── src/features.py
-       ├── src/modeling.py
-       └── saved model artifact
-       │
-       ▼
-Interactive BikePulse web app
-```
-
-**Entry point:** `app.py`
-
-**Live application:** [BikePulse](https://bike-sharing-demand-regression-ml.streamlit.app/)
-
-### Continuous Integration
-
-GitHub Actions validates the repository independently of the Streamlit deployment:
-
-```text
-Push / Pull Request / Manual Run
-                │
-                ▼
-        Install dependencies
-                │
-                ▼
-             Ruff
-                │
-                ▼
-       Pytest + coverage
-                │
-                ▼
-       Python compilation
-```
-
-This keeps deployment and code-quality validation separate: Streamlit serves the application, while GitHub Actions checks the codebase.
-
----
-
-## 🧩 Feature Engineering
-
-The project transforms the original datetime information into predictive calendar and cyclical features.
-
-### Calendar features
-
-- Year
-- Month
-- Day
-- Hour
-- Weekday
+- Year, month, day, hour and weekday
 - Week of year
 - Weekend indicator
-- Rush-hour indicator
-- Peak-hour indicator
+- Rush-hour and peak-hour indicators
+- Cyclical hour, month and weekday encodings
 
-### Cyclical features
+Categorical variables are one-hot encoded. Numeric variables use median imputation and standardization through a Scikit-learn ColumnTransformer.
 
-- Hour sine/cosine encoding
-- Month sine/cosine encoding
-- Weekday sine/cosine encoding
+### Target transformation
 
-These features help regression models represent recurring temporal patterns.
+The training target is modeled as:
 
----
+~~~text
+y_train → log1p(y_train)
+prediction → expm1(prediction)
+~~~
 
-## 📈 Dataset Analysis Results
+Negative outputs are clipped to zero.
 
-The following summary is based on the standard Kaggle **Bike Sharing Demand** training dataset used by this project. The training set contains **10,886 hourly observations and 12 original columns**. The target is `count`, total hourly bike rentals. The raw training data contains no missing values in the standard dataset. citeturn0search0turn3search2
-
-### Dataset profile
-
-| Metric | Result |
-|---|---:|
-| Training rows | 10,886 |
-| Original columns | 12 |
-| Test rows | 6,493 |
-| Target | `count` |
-| Target minimum | 1 |
-| Target maximum | 977 |
-| Target mean | 191.57 |
-| Target median | 145 |
-| Target standard deviation | 181.14 |
-| Target Q1 | 42 |
-| Target Q3 | 284 |
-
-### Target analysis
-
-| Calculated indicator | Result |
-|---|---:|
-| Mean − median | 46.57 rentals |
-| Mean / median | 1.32× |
-| Coefficient of variation | 94.56% |
-| Registered-user share of mean demand | 81.20% |
-| Casual-user share of mean demand | 18.80% |
-
-The difference between the mean (**191.57**) and median (**145**) and the high coefficient of variation (**94.56%**) show that hourly demand is strongly dispersed and right-skewed. This supports the project's use of a `log1p(count)` target transformation during model training. The underlying dataset statistics are independently reported from the standard Kaggle training file. citeturn3search0turn3search2
-
-### Feature statistics
-
-| Feature | Mean | Std | Min | Max |
-|---|---:|---:|---:|---:|
-| Temperature (`temp`) | 20.23°C | 7.79 | 0.82°C | 41.00°C |
-| Feels-like temperature (`atemp`) | 23.66°C | 8.47 | 0.76°C | 45.46°C |
-| Humidity | 61.89% | 19.25 | 0% | 100% |
-| Windspeed | 12.80 | 8.16 | 0 | 57.00 |
-| Casual rentals | 36.02 | 49.96 | 0 | 367 |
-| Registered rentals | 155.55 | 151.04 | 0 | 886 |
-
-These values describe the raw dataset before the project's feature engineering and leakage removal. The `casual` and `registered` columns are excluded from prediction features because they are components of the target and are not available as valid prediction inputs. citeturn3search1turn0search0
-
-> **Note:** These are dataset-level statistics. The model-performance results below come from this repository's reproducible `train_model.py` run against the project's Bike Sharing Demand training dataset.
+The deployed application also guards against predictions above the observed training maximum of **977 rentals/hour**. When a model extrapolates beyond that range, the app shows a warning instead of presenting the extrapolation as a normal observed-range estimate.
 
 ---
 
-## 📊 Model Evaluation
+## 📊 Models
 
-Models are evaluated using:
+| Model | Role |
+|---|---|
+| Linear Regression | Linear baseline |
+| Ridge Regression | L2 regularization |
+| Lasso Regression | L1 regularization |
+| Elastic Net | Combined L1/L2 regularization |
+| Polynomial Regression | Nonlinear feature expansion |
+| Decision Tree Regression | Nonlinear tree baseline |
+| Random Forest Regression | Bagged tree ensemble |
+| Gradient Boosting Regression | Boosted tree ensemble |
 
-- **RMSE** — Root Mean Squared Error
-- **MAE** — Mean Absolute Error
-- **R²** — Coefficient of determination
-- **Cross-validation RMSE**
-- **Holdout validation**
+Hyperparameter search is additionally performed for Random Forest and Gradient Boosting.
 
-The training workflow also uses a `log1p` target transformation and `expm1` inverse transformation to model the skewed demand target.
+---
 
-### Verified benchmark results
+## 🏆 Verified model results
 
-The following results were generated by this repository's `train_model.py` pipeline using the project's training configuration: 20% holdout split, 5-fold cross-validation, `log1p` target transformation, and hyperparameter tuning for Random Forest and Gradient Boosting.
+The committed report at **reports/model_comparison.csv** was generated by the project training pipeline using a 20% holdout split, 5-fold cross-validation, random_state 42, log1p target transformation, RandomizedSearchCV for Random Forest and GridSearchCV for Gradient Boosting.
 
 | Model | RMSE | MAE | R² |
 |---|---:|---:|---:|
@@ -349,302 +122,343 @@ The following results were generated by this repository's `train_model.py` pipel
 | Ridge Regression | 116.10 | 74.14 | 0.5916 |
 | Linear Regression | 116.12 | 74.15 | 0.5915 |
 
-**Selected model:** **Tuned Random Forest**, selected by the lowest holdout RMSE in the generated comparison table.
+**Selected training model:** **Tuned Random Forest**, selected by holdout RMSE.
 
-The tuned Random Forest achieved **RMSE 39.10**, **MAE 23.67**, and **R² 0.9537** on the holdout set. The untuned Random Forest produced the same displayed holdout metrics in this run.
+### Deployment artifact note
 
-The complete generated comparison is stored in `reports/model_comparison.csv`.
+The trained **models/final_model.joblib** artifact is approximately 225 MB and is not stored in normal Git history because it exceeds GitHub's standard 100 MB file limit.
 
----
+When that artifact is unavailable on Streamlit Cloud, **bootstrap_model.py** builds a reproducible **Random Forest fallback** from a public training-data mirror, with a deterministic synthetic-data fallback if the mirror cannot be reached.
 
-## 📊 Interactive Analytics
-
-The Streamlit application includes an **Analytics** view for inspecting the active regression model.
-
-It can show:
-
-- Top model features for estimators exposing coefficients or tree feature importance
-- A feature-importance chart
-- Training benchmark tables when generated reports are available
-- Active model and target-transformation metadata
-
-Generate reproducible benchmark reports locally with:
-
-```powershell
-python train_model.py --train "D:\Bike\train.csv"
-```
-
-The generated `reports/model_comparison.csv` is committed as a reproducible evaluation artifact. The large `models/final_model.joblib` artifact is kept local and ignored by Git because it exceeds GitHub's standard 100 MB file limit.
-
----
-## 🧪 Data Science Topics
-
-The accompanying notebook covers **18 practical topics**:
-
-1. Dataset structure and column interpretation
-2. YData Profiling and data-quality analysis
-3. Demand patterns by season, weather, calendar and hour
-4. Correlation, nonlinear relationships and outliers
-5. Casual vs. registered user behavior
-6. Data cleaning and leakage prevention
-7. Datetime and calendar feature engineering
-8. LabelEncoder, OneHotEncoder and OrdinalEncoder
-9. Encoding and `inverse_transform`
-10. StandardScaler vs. MinMaxScaler
-11. Linear Regression
-12. Polynomial Regression
-13. Ridge, Lasso and Elastic Net
-14. Decision Tree, Random Forest and Gradient Boosting
-15. Model accuracy, generalization and complexity
-16. GridSearchCV and RandomizedSearchCV
-17. Pipeline and ColumnTransformer
-18. Joblib serialization and deployment
+The live fallback is a deployment bootstrap model; it should not be confused with the verified tuned-model benchmark above.
 
 ---
 
-## 📁 Project Structure
+## 🧪 Dataset
 
-```text
-bike-sharing-demand-regression-ml/
-│
-├── app.py                    # Streamlit application
-├── train_model.py            # Model training pipeline
-├── generate_submission.py    # Kaggle submission generator
-├── bootstrap_model.py        # Model/data bootstrap utilities
-│
-├── src/
-│   ├── config.py             # Project configuration
-│   ├── data.py               # Loading, cleaning and validation
-│   ├── features.py           # Feature engineering
-│   ├── modeling.py           # Model and pipeline definitions
-│   ├── evaluation.py         # Metrics and feature importance
-│   └── __init__.py
-│
-├── tests/                    # Automated test suite
-├── notebooks/                # Exploratory analysis notebook
-├── data/                     # Dataset instructions
-├── models/                   # Generated model artifacts
-├── reports/                  # Generated evaluation/submission files
-│
-├── .github/workflows/       # GitHub Actions CI
-├── .streamlit/              # Streamlit configuration
-│
-├── requirements.txt          # Runtime dependencies
-├── requirements-dev.txt      # Development/EDA/test dependencies
-├── pyproject.toml            # Ruff/project configuration
-├── .gitignore
-├── LICENSE
-└── README.md
-```
-
----
-
-## ⚙️ Local Installation
-
-### 1. Clone the repository
-
-```powershell
-git clone https://github.com/mightyalok00/bike-sharing-demand-regression-ml.git
-cd bike-sharing-demand-regression-ml
-```
-
-### 2. Create a virtual environment
-
-```powershell
-python -m venv .venv
-.venv\Scripts\activate
-```
-
-### 3. Install dependencies
-
-For the Streamlit application:
-
-```powershell
-pip install -r requirements.txt
-```
-
-For development, notebooks and testing:
-
-```powershell
-pip install -r requirements-dev.txt
-```
-
----
-
-## ▶️ Run the Streamlit App
-
-Start the application locally:
-
-```powershell
-streamlit run app.py
-```
-
-Then open the local Streamlit URL shown in the terminal.
-
----
-
-## 🏋️ Train the Models
-
-The training pipeline expects the Kaggle competition files to be available locally.
-
-Example:
-
-```powershell
-python train_model.py --train "D:\Bike\train.csv"
-```
-
-The training process includes:
-
-- Data validation
-- Data cleaning
-- Leakage-safe feature engineering
-- Train/holdout split
-- 5-fold cross-validation
-- Multiple regression models
-- `log1p` target transformation
-- RandomizedSearchCV
-- GridSearchCV
-- Holdout evaluation
-- Feature-importance analysis
-- Joblib serialization
-
-Generated artifacts are written to:
-
-```text
-models/
-reports/
-```
-
----
-
-## 📦 Generate a Kaggle Submission
-
-After training a model:
-
-```powershell
-python generate_submission.py --test "D:\Bike\test.csv" --sample "D:\Bike\sampleSubmission.csv"
-```
-
-The generated submission is written to:
-
-```text
-reports/submission.csv
-```
-
-Raw Kaggle CSV files are intentionally **not committed to this repository**.
-
----
-
-## 🗂️ Dataset
-
-The project uses the **Kaggle Bike Sharing Demand** competition dataset.
+The project uses the **Kaggle Bike Sharing Demand** dataset.
 
 Expected local files:
 
-```text
+~~~text
 D:\Bike\train.csv
 D:\Bike\test.csv
 D:\Bike\sampleSubmission.csv
-```
+~~~
 
 Dataset source:
 
 **[Kaggle — Bike Sharing Demand](https://www.kaggle.com/competitions/bike-sharing-demand/data)**
 
-The competition dataset is subject to Kaggle's applicable competition rules. The MIT License applies only to the original code in this repository.
+Raw Kaggle CSV files are intentionally excluded from Git.
+
+### Dataset profile
+
+| Metric | Value |
+|---|---:|
+| Training observations | 10,886 |
+| Original columns | 12 |
+| Test observations | 6,493 |
+| Target | count |
+| Target minimum | 1 |
+| Target maximum | 977 |
+| Target mean | 191.57 |
+| Target median | 145 |
+| Target standard deviation | 181.14 |
+
+These are dataset-level statistics, not model-performance metrics.
 
 ---
 
-## 🧪 Testing & Code Quality
+## 🏗️ Architecture
 
-The repository includes automated tests covering:
+~~~text
+                         Bike Sharing Dataset
+                                  │
+                                  ▼
+                       ┌────────────────────┐
+                       │     src/data.py    │
+                       │ Load / clean /     │
+                       │ validate schemas   │
+                       └─────────┬──────────┘
+                                 │
+                                 ▼
+                       ┌────────────────────┐
+                       │   src/features.py  │
+                       │ Datetime features  │
+                       │ Leakage prevention │
+                       └─────────┬──────────┘
+                                 │
+                                 ▼
+                       ┌────────────────────┐
+                       │  src/modeling.py   │
+                       │ Preprocessors +    │
+                       │ regression models  │
+                       └─────────┬──────────┘
+                                 │
+                  ┌──────────────┴──────────────┐
+                  ▼                             ▼
+        ┌──────────────────┐          ┌──────────────────┐
+        │  train_model.py  │          │      tests/      │
+        │ CV + tuning +    │          │ pytest + coverage│
+        │ evaluation       │          └──────────────────┘
+        └────────┬─────────┘
+                 │
+                 ▼
+        ┌──────────────────────┐
+        │ models/ + reports/   │
+        │ model + CSV reports  │
+        └──────────┬───────────┘
+                   │
+                   ▼
+        ┌──────────────────────┐
+        │       app.py         │
+        │ Streamlit prediction │
+        │ + analytics + model  │
+        │ information          │
+        └──────────────────────┘
+~~~
 
-- Datetime and cyclical feature engineering
-- Target-leakage removal
-- Input schema validation
-- Data cleaning
-- Regression metrics
-- Model fitting and prediction
-- Polynomial regression
+### Design principles
 
-Run the test suite:
+- **Separation of concerns** — reusable ML logic lives under src/.
+- **Leakage-safe features** — outcome-derived variables never enter prediction.
+- **Pipeline-based preprocessing** — transformations stay coupled to the estimator.
+- **Reproducible training** — deterministic random state where supported.
+- **Testable components** — core data, features, evaluation and modeling utilities have tests.
+- **Deployment separation** — Streamlit serves the app; GitHub Actions validates the codebase.
 
-```powershell
+---
+
+## 📁 Repository structure
+
+~~~text
+bike-sharing-demand-regression-ml/
+│
+├── app.py                         # Streamlit application
+├── train_model.py                 # End-to-end training and tuning
+├── bootstrap_model.py             # Cloud/offline model bootstrap
+├── generate_submission.py         # Kaggle submission generator
+│
+├── src/
+│   ├── config.py                  # Paths and training configuration
+│   ├── data.py                    # Loading, cleaning and validation
+│   ├── features.py                # Feature engineering
+│   ├── modeling.py                # Models and preprocessing pipelines
+│   ├── evaluation.py              # Metrics and feature importance
+│   └── __init__.py
+│
+├── tests/                         # Automated ML tests
+├── notebooks/                     # Supporting data-science notebook
+├── data/                          # Dataset instructions only
+├── reports/                       # Committed evaluation reports
+├── models/                        # Local generated model artifacts
+│
+├── .github/
+│   ├── workflows/ci.yml           # Lint + test + compile
+│   └── dependabot.yml             # Dependency update configuration
+├── .streamlit/                    # Streamlit configuration
+│
+├── requirements.txt               # Runtime dependencies
+├── requirements-dev.txt           # Testing / notebook dependencies
+├── pyproject.toml                 # Ruff + pytest configuration
+├── CONTRIBUTING.md
+├── SECURITY.md
+├── CHANGELOG.md
+├── LICENSE
+└── README.md
+~~~
+
+---
+
+## ⚙️ Installation
+
+### 1. Clone
+
+~~~powershell
+git clone https://github.com/mightyalok00/bike-sharing-demand-regression-ml.git
+cd bike-sharing-demand-regression-ml
+~~~
+
+### 2. Create a virtual environment
+
+~~~powershell
+python -m venv .venv
+.venv\Scripts\activate
+~~~
+
+### 3. Install dependencies
+
+Runtime:
+
+~~~powershell
+pip install -r requirements.txt
+~~~
+
+Development, notebooks and tests:
+
+~~~powershell
+pip install -r requirements-dev.txt
+~~~
+
+---
+
+## ▶️ Run the application
+
+~~~powershell
+streamlit run app.py
+~~~
+
+Then open the local Streamlit URL printed in the terminal.
+
+---
+
+## 🏋️ Train the models
+
+With the Kaggle training file available locally:
+
+~~~powershell
+python train_model.py --train "D:\Bike\train.csv"
+~~~
+
+The pipeline performs:
+
+1. Schema validation
+2. Data cleaning
+3. Leakage-safe feature engineering
+4. Train/holdout split
+5. 5-fold cross-validation
+6. Baseline model training
+7. Hyperparameter search
+8. Holdout evaluation
+9. Model selection
+10. Feature-importance generation
+11. Artifact/report generation
+
+Generated outputs include:
+
+~~~text
+models/final_model.joblib
+reports/model_comparison.csv
+reports/holdout_metrics.csv
+reports/feature_importance.csv
+~~~
+
+The large model artifact is intentionally ignored by Git.
+
+---
+
+## 📦 Generate a Kaggle submission
+
+~~~powershell
+python generate_submission.py --test "D:\Bike\test.csv" --sample "D:\Bike\sampleSubmission.csv"
+~~~
+
+Output:
+
+~~~text
+reports/submission.csv
+~~~
+
+---
+
+## 🧪 Testing and code quality
+
+Run the complete test suite:
+
+~~~powershell
 pytest -q --cov=src --cov-report=term-missing
-```
+~~~
 
 Run Ruff:
 
-```powershell
-ruff check src bootstrap_model.py train_model.py tests
-```
-
----
-
-## 🔄 Continuous Integration
-
-GitHub Actions runs the same lint, test and compilation checks on pushes and pull requests. The workflow also includes `workflow_dispatch`, so you can manually run it from **GitHub → Actions → CI → Run workflow**.
-
----
-
-## 🧪 Local Quality Checks
-
-The repository keeps quality checks lightweight and reproducible locally. Run them before committing:
-
-```powershell
+~~~powershell
 ruff check src bootstrap_model.py train_model.py generate_submission.py tests
-pytest -q --cov=src --cov-report=term-missing
+~~~
+
+Validate Python compilation:
+
+~~~powershell
 python -m compileall -q src bootstrap_model.py train_model.py generate_submission.py
-```
+~~~
+
+### Continuous integration
+
+GitHub Actions runs linting, tests and Python compilation on pushes and pull requests to main. A manual workflow trigger is also available.
 
 ---
 
-## 🔐 Engineering Practices
+## ☁️ Deployment
 
-This project follows several production-oriented practices:
+The live application runs on **Streamlit Community Cloud** from app.py.
 
-- **Modular architecture** — reusable functionality is separated into `src/`
-- **Pipeline-based preprocessing** — preprocessing and models are composed with Scikit-learn pipelines
-- **Leakage prevention** — outcome-derived features are excluded from prediction inputs
-- **Reproducibility** — `RANDOM_STATE = 42` is used where supported
-- **Dependency separation** — runtime and development dependencies are maintained separately
-- **Automated testing** — core ML utilities are covered by tests
-- **Local quality checks** — linting, testing and compilation commands are documented
-- **Artifact separation** — generated models and reports are separated from source code
+**Live demo:** https://bike-sharing-demand-regression-ml.streamlit.app/
+
+Deployment and CI have separate responsibilities:
+
+~~~text
+GitHub push
+   ├──► GitHub Actions → lint / test / compile
+   │
+   └──► Streamlit Cloud → build / serve app
+~~~
+
+GitHub recommends Git LFS when large files need to be tracked. This project currently keeps the 225 MB trained model local and uses the documented bootstrap path for deployment instead. 
+
+---
+
+## 📚 Notebook
+
+**notebooks/bike_sharing_demand_18_questions.ipynb** contains the project's 18-question data-science learning workflow covering exploration, profiling, demand patterns, correlation, cleaning, leakage prevention, datetime features, encoding, scaling, regression, regularization, tree models, tuning, pipelines and serialization.
+
+The production training path is the Python pipeline under src/ and train_model.py; the notebook is supporting analysis material.
+
+---
+
+## 🛡️ Engineering and security
+
+- Kaggle CSV files are not committed.
+- The application requires no API keys or application secrets.
+- Generated model binaries are ignored.
+- Runtime and development dependencies are separated.
+- Automated linting, tests and compilation run in CI.
+- Security reporting guidance is provided in SECURITY.md.
+- Dependabot configuration is included for Python dependency updates.
 
 ---
 
 ## 🧭 Roadmap
 
-- [x] Exploratory data analysis
-- [x] Feature engineering
-- [x] Multiple regression algorithms
+- [x] Data validation and cleaning
+- [x] Leakage-safe feature engineering
+- [x] Multiple regression models
 - [x] Cross-validation
 - [x] Hyperparameter tuning
-- [x] Joblib serialization
-- [x] Streamlit application
-- [x] Automated test suite
-- [x] MIT license
-- [x] Add verified benchmark table from a reproducible training run
-- [x] Add prediction analytics / model explainability
-- [ ] Add production monitoring
+- [x] Reproducible benchmark report
+- [x] Automated tests
+- [x] GitHub Actions CI
+- [x] Streamlit deployment
+- [x] Interactive model analytics
+- [x] Prediction output safeguards
+- [ ] Production monitoring and drift detection
+- [ ] Optional external model-artifact storage
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome. Please see **[CONTRIBUTING.md](CONTRIBUTING.md)** for the development workflow, testing expectations and pull-request checklist.
+See **[CONTRIBUTING.md](CONTRIBUTING.md)** for setup, coding expectations, ML contribution guidelines and pull-request checks.
 
 ---
 
 ## 👤 Author
 
-### Alok Agarwal
+**Alok Agarwal**
 
-**Data Science · Machine Learning · Python · SEO & Digital Marketing**
+Data Science · Machine Learning · Python · SEO & Digital Marketing
 
-- **GitHub:** [@mightyalok00](https://github.com/mightyalok00)
-- **LinkedIn:** [Alok Agarwal](https://www.linkedin.com/in/alok-agarwal-seo-digital-marketing)
+- GitHub: https://github.com/mightyalok00
+- LinkedIn: https://www.linkedin.com/in/alok-agarwal-seo-digital-marketing
 
 ---
 
@@ -654,9 +468,6 @@ This project is licensed under the **MIT License**.
 
 See [LICENSE](LICENSE) for details.
 
----
-
 <p align="center">
-  <strong>Built with Python · Scikit-learn · Streamlit</strong><br/>
-  <sub>BikePulse — Predicting hourly bike-sharing demand with machine learning.</sub>
+  <strong>🚲 BikePulse — Predicting hourly bike-sharing demand with machine learning.</strong>
 </p>
