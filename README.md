@@ -441,7 +441,7 @@ This project follows several production-oriented practices:
 - [x] Automated test suite
 - [x] MIT license
 - [ ] Add verified benchmark table from a reproducible training run
-- [ ] Add prediction analytics / model explainability
+- [x] Add prediction analytics / model explainability
 - [ ] Add production monitoring
 
 ---
