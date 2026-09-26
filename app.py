@@ -23,13 +23,14 @@ div[data-testid="stMetric"] { background: rgba(255,255,255,.82); border-radius: 
 
 st.markdown("""<div class="hero"><h1>🚲 BikePulse Demand Predictor</h1><p>Turn time + weather conditions into an hourly bike-rental demand forecast.</p></div>""", unsafe_allow_html=True)
 
-if not MODEL_PATH.exists():
-    st.error("⚠️ Trained model not found. Run python train_model.py and make sure models/final_model.joblib is available before deploying.")
-    st.stop()
-
 @st.cache_resource
 def load_model_bundle():
-    return joblib.load(MODEL_PATH)
+    if MODEL_PATH.exists():
+        return joblib.load(MODEL_PATH)
+    # Streamlit Cloud does not have the developer's local D:/Bike files.
+    # Bootstrap a reproducible fallback from the public Bike Sharing dataset.
+    from bootstrap_model import build_fallback_model
+    return build_fallback_model()
 
 bundle = load_model_bundle()
 model = bundle["model"]
