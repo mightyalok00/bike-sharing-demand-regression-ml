@@ -8,4 +8,3 @@ select = ["E", "F", "I"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["api", "src"]
-section-order = ["future", "standard-library", "first-party", "third-party", "local-folder"]
