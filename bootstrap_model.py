@@ -76,6 +76,31 @@ def _synthetic_training_data(n_rows: int = 5000) -> pd.DataFrame:
     })
 
 
+def load_training_data() -> pd.DataFrame:
+    try:
+        return pd.read_csv(DATA_URL)
+    except Exception as exc:
+        LOGGER.warning("Public training-data bootstrap failed: %s", exc)
+        return _synthetic_training_data()
+
+
+def build_model_catalog(train: pd.DataFrame | None = None):
+    """Train the project's regression models for interactive model selection."""
+    if train is None:
+        train = load_training_data()
+
+    X = prepare_features(train)
+    y = np.log1p(train["count"].astype(float))
+    numeric, categorical = split_feature_types(X)
+    models = make_models(numeric, categorical)
+
+    catalog = {}
+    for name, model in models.items():
+        model.fit(X, y)
+        catalog[name] = model
+    return catalog
+
+
 def _train(train: pd.DataFrame, model_name: str):
     required = {
         "datetime", "season", "holiday", "workingday", "weather",
@@ -102,12 +127,10 @@ def _train(train: pd.DataFrame, model_name: str):
 
 
 def build_fallback_model():
-    try:
-        train = pd.read_csv(DATA_URL)
-        return _train(train, "Gradient Boosting Regression • Cloud fallback")
-    except Exception as exc:
-        LOGGER.warning("Public training-data bootstrap failed: %s", exc)
-        return _train(
-            _synthetic_training_data(),
-            "Gradient Boosting Regression • Offline fallback",
-        )
+    train = load_training_data()
+    label = (
+        "Gradient Boosting Regression • Cloud fallback"
+        if "TeamLab" in DATA_URL
+        else "Gradient Boosting Regression • Offline fallback"
+    )
+    return _train(train, label)
