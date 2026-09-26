@@ -1,0 +1,10 @@
+numpy>=1.26,<3
+pandas>=2.2,<3
+scikit-learn>=1.5,<2
+matplotlib>=3.9,<4
+seaborn>=0.13,<1
+streamlit>=1.40,<2
+joblib>=1.4,<2
+ydata-profiling>=4.12,<5
+jupyter>=1.1,<2
+nbformat>=5.10,<6
