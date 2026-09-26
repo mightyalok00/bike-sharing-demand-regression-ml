@@ -2,7 +2,7 @@
 
 <p align="center">
   <strong>Production-style machine learning project for hourly bike rental demand forecasting</strong><br/>
-  Kaggle Bike Sharing Demand · Scikit-learn · Streamlit · FastAPI · Docker
+  Kaggle Bike Sharing Demand · Scikit-learn · Streamlit
 </p>
 
 <p align="center">
@@ -25,7 +25,7 @@
 
 This repository is an end-to-end regression machine learning project built around the **Kaggle Bike Sharing Demand** competition.
 
-The project covers data exploration, feature engineering, model comparison, hyperparameter tuning, model serialization, interactive prediction, REST API development, and containerized deployment.
+The project covers data exploration, feature engineering, model comparison, hyperparameter tuning, model serialization, and interactive Streamlit prediction.
 
 ### 🎯 Objective
 
@@ -60,12 +60,8 @@ bike-sharing-demand-regression-ml/
 ├── requirements.txt
 ├── requirements-dev.txt
 ├── pyproject.toml
-├── Dockerfile
-├── railway.toml
-├── api.py
 ├── bootstrap_model.py
 ├── .streamlit/
-├── .dockerignore
 ├── .gitignore
 ├── README.md
 ├── LICENSE
@@ -114,7 +110,7 @@ Hyperparameter Tuning
    ↓
 Model Serialization
    ↓
-Streamlit + FastAPI Deployment
+Streamlit Deployment
 ```
 
 ## 🔬 Data Science Topics Covered
@@ -233,7 +229,7 @@ Run locally:
 streamlit run app.py
 ```
 
-The application supports interactive model selection and prediction controls matching the FastAPI interface.
+The application supports interactive model selection and prediction controls.
 
 For Streamlit Community Cloud, use:
 
@@ -243,98 +239,13 @@ Main file: app.py
 
 Runtime dependencies are intentionally kept in the lightweight `requirements.txt`.
 
-## 🚀 FastAPI REST API
+## 🚀 Deployment
 
-The repository contains a production-style FastAPI service.
-
-### Endpoints
-
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | `/` | API status and service information |
-| GET | `/health` | Health check |
-| GET | `/models` | Available models and prediction controls |
-| POST | `/predict` | Generate a bike-demand prediction |
-| GET | `/docs` | Swagger / OpenAPI interface |
-
-### API flow
-
-```text
-Client
-  ↓
-POST /predict
-  ↓
-FastAPI validation
-  ↓
-Feature engineering
-  ↓
-Selected regression model
-  ↓
-Prediction
-  ↓
-JSON response
-```
-
-The API accepts controls for:
-
-- Date/time
-- Scenario
-- Regression model
-- Season
-- Weather
-- Holiday
-- Working day
-- Temperature
-- Feels-like temperature
-- Humidity
-- Wind speed
-
-## 🐳 Docker
-
-Build the API image:
-
-```bash
-docker build -t bike-sharing-demand .
-```
-
-Run locally:
-
-```bash
-docker run --rm -p 8000:8000 bike-sharing-demand
-```
-
-Health check:
-
-```text
-http://localhost:8000/health
-```
-
-Swagger:
-
-```text
-http://localhost:8000/docs
-```
-
-The Dockerfile is configured to use the deployment platform's `PORT` environment variable.
-
-## ☁️ Deployment
-
-### Streamlit
-
-The interactive frontend is deployed separately:
+The interactive application is deployed on Streamlit Community Cloud:
 
 **[Open BikePulse](https://bike-sharing-demand-regression-ml.streamlit.app/)**
 
-### FastAPI / Docker
-
-The API is Docker-ready for services such as:
-
-- Railway
-- Render Web Service
-- Google Cloud Run
-- Koyeb
-
-Use a **Web Service / container service** for the FastAPI backend rather than a Static Site.
+For Streamlit Community Cloud, use `app.py` as the main file.
 
 ## 📊 Model Evaluation
 
@@ -387,9 +298,7 @@ This repository intentionally separates:
 - Development / notebook dependencies → `requirements-dev.txt`
 - Local/raw data → excluded from Git
 - Model artifacts → stored separately from raw data
-- Frontend → Streamlit
-- API → FastAPI
-- Containerization → Docker
+- Application → Streamlit
 
 ## 🧪 Reproducibility & Continuous Integration
 
@@ -420,13 +329,12 @@ The `tests/` suite covers:
 - regression metrics
 - model fitting and prediction
 - polynomial regression
-- FastAPI metadata endpoints
 
 Run locally:
 
 ```powershell
 pip install -r requirements-dev.txt
-pytest -q --cov=src --cov=api --cov-report=term-missing
+pytest -q --cov=src --cov-report=term-missing
 ```
 
 ### GitHub Actions CI
@@ -439,7 +347,7 @@ Every push to `main` and every pull request targeting `main` runs:
 4. Pytest with coverage
 5. Python compilation validation
 
-Ruff import sorting is configured in `pyproject.toml`, and CI pins the test/lint tool ranges used for reproducible checks. This keeps model utilities, API code, and feature-engineering changes continuously checked before they are considered production-ready.
+Ruff import sorting is configured in `pyproject.toml`, and CI pins the test/lint tool ranges used for reproducible checks. This keeps the model utilities and feature-engineering changes continuously checked before they are considered production-ready.
 
 ## 🧭 Roadmap
 
@@ -450,8 +358,6 @@ Ruff import sorting is configured in `pyproject.toml`, and CI pins the test/lint
 - [x] Hyperparameter tuning
 - [x] Joblib serialization
 - [x] Streamlit dashboard
-- [x] FastAPI REST API
-- [x] Docker containerization
 - [x] MIT license for original code
 - [ ] Add verified benchmark table from a reproducible training run
 - [x] Add automated CI tests
@@ -470,5 +376,5 @@ Data Science · Machine Learning · Python · SEO & Digital Marketing
 ---
 
 <p align="center">
-  Built with Python, Scikit-learn, Streamlit, FastAPI and Docker.
+  Built with Python, Scikit-learn, and Streamlit.
 </p>
