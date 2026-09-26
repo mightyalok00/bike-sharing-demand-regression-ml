@@ -14,7 +14,10 @@ from src.modeling import make_models, make_polynomial_pipeline
 LOGGER = logging.getLogger(__name__)
 
 # Public mirror used first when the committed model artifact is unavailable.
-DATA_URL = "https://raw.githubusercontent.com/TeamLab/machine_learning_from_scratch_with_python/master/code/ch8/data/train.csv"
+DATA_URL = (
+    "https://raw.githubusercontent.com/TeamLab/"
+    "machine_learning_from_scratch_with_python/master/code/ch8/data/train.csv"
+)
 
 
 def _synthetic_training_data(n_rows: int = 5000) -> pd.DataFrame:
