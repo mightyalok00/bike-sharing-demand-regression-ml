@@ -1,25 +1,31 @@
-# Data directory
+# Dataset instructions
 
-Do not commit Kaggle CSV files to this repository.
+The Kaggle Bike Sharing Demand CSV files are intentionally not committed to this repository.
 
-For local Windows work, the project accepts:
+## Expected local files
 
-```text
+~~~text
 D:\Bike\train.csv
 D:\Bike\test.csv
 D:\Bike\sampleSubmission.csv
-```
+~~~
 
-For Docker training, mount the directory:
+## Source
 
-```powershell
-docker run --rm -v "D:\Bike:/app/data" IMAGE_NAME ...
-```
+[Kaggle — Bike Sharing Demand](https://www.kaggle.com/competitions/bike-sharing-demand/data)
 
-Inside Docker, the equivalent paths are:
+## Training
 
-```text
-/app/data/train.csv
-/app/data/test.csv
-/app/data/sampleSubmission.csv
-```
+From the repository root:
+
+~~~powershell
+python train_model.py --train "D:\Bike\train.csv"
+~~~
+
+## Submission generation
+
+~~~powershell
+python generate_submission.py --test "D:\Bike\test.csv" --sample "D:\Bike\sampleSubmission.csv"
+~~~
+
+Raw dataset files remain local because they are not required to review the source code, tests, or committed evaluation report.
