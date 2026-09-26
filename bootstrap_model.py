@@ -87,7 +87,7 @@ def _synthetic_training_data(n_rows: int = 5000) -> pd.DataFrame:
 def load_training_data() -> pd.DataFrame:
     try:
         return pd.read_csv(DATA_URL)
-    except (OSError, URLError, ValueError) as exc:
+    except (OSError, ValueError, URLError) as exc:
         LOGGER.warning("Public training-data bootstrap failed: %s", exc)
         return _synthetic_training_data()
 
