@@ -1,0 +1,11 @@
+[tool.ruff]
+target-version = "py312"
+line-length = 88
+src = [".", "src"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["api", "src"]
+section-order = ["future", "standard-library", "first-party", "third-party", "local-folder"]
