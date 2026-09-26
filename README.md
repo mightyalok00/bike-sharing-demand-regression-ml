@@ -180,6 +180,26 @@ Once a benchmark is generated, it can be added to this section with the exact tr
 
 ---
 
+## 📊 Interactive Analytics
+
+The Streamlit application includes an **Analytics** view for inspecting the active regression model.
+
+It can show:
+
+- Top model features for estimators exposing coefficients or tree feature importance
+- A feature-importance chart
+- Training benchmark tables when generated reports are available
+- Active model and target-transformation metadata
+
+Generate reproducible benchmark reports locally with:
+
+```powershell
+python train_model.py --train "D:\Bike\train.csv"
+```
+
+The generated `reports/model_comparison.csv` is intentionally not committed automatically because it depends on the local training dataset and configuration.
+
+---
 ## 🧪 Data Science Topics
 
 The accompanying notebook covers **18 practical topics**:
