@@ -87,10 +87,10 @@ Categorical variables are one-hot encoded. Numeric variables use median imputati
 
 The training target is modeled as:
 
-```text
+~~~text
 y_train → log1p(y_train)
 prediction → expm1(prediction)
-```
+~~~
 
 Negative outputs are clipped to zero.
 
@@ -150,11 +150,11 @@ The project uses the **Kaggle Bike Sharing Demand** dataset.
 
 Expected local files:
 
-```text
+~~~text
 D:\Bike\train.csv
 D:\Bike\test.csv
 D:\Bike\sampleSubmission.csv
-```
+~~~
 
 Dataset source:
 
@@ -182,7 +182,7 @@ These are dataset-level statistics, not model-performance metrics.
 
 ## 🏗️ Architecture
 
-```text
+~~~text
                          Bike Sharing Dataset
                                   │
                                   ▼
@@ -227,7 +227,7 @@ These are dataset-level statistics, not model-performance metrics.
         │ + analytics + model  │
         │ information          │
         └──────────────────────┘
-```
+~~~
 
 ### Design principles
 
@@ -242,7 +242,7 @@ These are dataset-level statistics, not model-performance metrics.
 
 ## 📁 Repository structure
 
-```text
+~~~text
 bike-sharing-demand-regression-ml/
 │
 ├── app.py                         # Streamlit application
@@ -277,7 +277,7 @@ bike-sharing-demand-regression-ml/
 ├── CHANGELOG.md
 ├── LICENSE
 └── README.md
-```
+~~~
 
 ---
 
@@ -285,39 +285,39 @@ bike-sharing-demand-regression-ml/
 
 ### 1. Clone
 
-```powershell
+~~~powershell
 git clone https://github.com/mightyalok00/bike-sharing-demand-regression-ml.git
 cd bike-sharing-demand-regression-ml
-```
+~~~
 
 ### 2. Create a virtual environment
 
-```powershell
+~~~powershell
 python -m venv .venv
 .venv\Scripts\activate
-```
+~~~
 
 ### 3. Install dependencies
 
 Runtime:
 
-```powershell
+~~~powershell
 pip install -r requirements.txt
-```
+~~~
 
 Development, notebooks and tests:
 
-```powershell
+~~~powershell
 pip install -r requirements-dev.txt
-```
+~~~
 
 ---
 
 ## ▶️ Run the application
 
-```powershell
+~~~powershell
 streamlit run app.py
-```
+~~~
 
 Then open the local Streamlit URL printed in the terminal.
 
@@ -327,9 +327,9 @@ Then open the local Streamlit URL printed in the terminal.
 
 With the Kaggle training file available locally:
 
-```powershell
+~~~powershell
 python train_model.py --train "D:\Bike\train.csv"
-```
+~~~
 
 The pipeline performs:
 
@@ -347,12 +347,12 @@ The pipeline performs:
 
 Generated outputs include:
 
-```text
+~~~text
 models/final_model.joblib
 reports/model_comparison.csv
 reports/holdout_metrics.csv
 reports/feature_importance.csv
-```
+~~~
 
 The large model artifact is intentionally ignored by Git.
 
@@ -360,15 +360,15 @@ The large model artifact is intentionally ignored by Git.
 
 ## 📦 Generate a Kaggle submission
 
-```powershell
+~~~powershell
 python generate_submission.py --test "D:\Bike\test.csv" --sample "D:\Bike\sampleSubmission.csv"
-```
+~~~
 
 Output:
 
-```text
+~~~text
 reports/submission.csv
-```
+~~~
 
 ---
 
@@ -376,21 +376,21 @@ reports/submission.csv
 
 Run the complete test suite:
 
-```powershell
+~~~powershell
 pytest -q --cov=src --cov-report=term-missing
-```
+~~~
 
 Run Ruff:
 
-```powershell
+~~~powershell
 ruff check src bootstrap_model.py train_model.py generate_submission.py tests
-```
+~~~
 
 Validate Python compilation:
 
-```powershell
+~~~powershell
 python -m compileall -q src bootstrap_model.py train_model.py generate_submission.py
-```
+~~~
 
 ### Continuous integration
 
@@ -406,12 +406,12 @@ The live application runs on **Streamlit Community Cloud** from app.py.
 
 Deployment and CI have separate responsibilities:
 
-```text
+~~~text
 GitHub push
    ├──► GitHub Actions → lint / test / compile
    │
    └──► Streamlit Cloud → build / serve app
-```
+~~~
 
 GitHub recommends Git LFS when large files need to be tracked. This project currently keeps the 225 MB trained model local and uses the documented bootstrap path for deployment instead.
 
