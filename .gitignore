@@ -8,3 +8,4 @@ reports/*.html
 reports/*.png
 *.log
 models/*.joblib
+models/*.joblib
