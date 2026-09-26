@@ -6,7 +6,6 @@ All notable changes to **BikePulse** are documented here.
 
 ### Planned
 - Add verified model benchmark tables generated from a reproducible training run.
-- Add prediction analytics and model explainability.
 - Add production monitoring.
 
 ## [2026-09-26]
