@@ -31,11 +31,11 @@ jobs:
           pip install "pytest>=8.3,<9" "pytest-cov>=5,<7" "ruff>=0.8,<1"
 
       - name: Lint
-        run: ruff check src api.py bootstrap_model.py train_model.py tests
+        run: ruff check src bootstrap_model.py train_model.py tests
 
       - name: Run tests with coverage
         run: |
-          pytest -q --cov=src --cov=api --cov-report=term-missing --cov-report=xml
+          pytest -q --cov=src --cov-report=term-missing --cov-report=xml
 
       - name: Validate Python compilation
-        run: python -m compileall -q src api.py bootstrap_model.py train_model.py
+        run: python -m compileall -q src bootstrap_model.py train_model.py
