@@ -390,6 +390,56 @@ This repository intentionally separates:
 - API → FastAPI
 - Containerization → Docker
 
+## 🧪 Reproducibility & Continuous Integration
+
+The repository includes automated tests and GitHub Actions CI for reproducible engineering checks.
+
+### Reproducible environment
+
+- Python **3.12** is the reference CI/runtime version.
+- ML workflows use `RANDOM_STATE = 42` for deterministic data splitting and model-search operations where supported.
+- Runtime dependencies are separated from notebook/development dependencies.
+- Raw Kaggle competition data is kept outside Git and supplied through explicit local paths or environment variables.
+- Training artifacts are written to the documented `models/` and `reports/` directories.
+
+Run the training workflow with:
+
+```powershell
+python train_model.py --train "D:\Bike\train.csv"
+```
+
+### Automated tests
+
+The `tests/` suite covers:
+
+- datetime and cyclical feature engineering
+- target-leakage removal
+- input schema validation
+- data cleaning
+- regression metrics
+- model fitting and prediction
+- polynomial regression
+- FastAPI metadata endpoints
+
+Run locally:
+
+```powershell
+pip install -r requirements-dev.txt
+pytest -q --cov=src --cov=api --cov-report=term-missing
+```
+
+### GitHub Actions CI
+
+Every push to `main` and every pull request targeting `main` runs:
+
+1. Python 3.12 environment setup
+2. Dependency installation with pip caching
+3. Ruff linting
+4. Pytest with coverage
+5. Python compilation validation
+
+This keeps model utilities, API code, and feature-engineering changes continuously checked before they are considered production-ready.
+
 ## 🧭 Roadmap
 
 - [x] Exploratory data analysis
