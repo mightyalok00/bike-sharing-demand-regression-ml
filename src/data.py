@@ -27,7 +27,9 @@ def validate_train(df: pd.DataFrame) -> None:
     }
     missing = required - set(df.columns)
     if missing:
-        raise ValueError(f"Training data is missing required columns: {sorted(missing)}")
+        raise ValueError(
+            f"Training data is missing required columns: {sorted(missing)}"
+        )
 
 
 def validate_test(df: pd.DataFrame) -> None:
@@ -37,7 +39,9 @@ def validate_test(df: pd.DataFrame) -> None:
     }
     missing = required - set(df.columns)
     if missing:
-        raise ValueError(f"Test data is missing required columns: {sorted(missing)}")
+        raise ValueError(
+            f"Test data is missing required columns: {sorted(missing)}"
+        )
 
 
 def basic_clean(df: pd.DataFrame) -> pd.DataFrame:
