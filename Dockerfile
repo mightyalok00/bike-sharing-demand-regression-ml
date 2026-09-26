@@ -1,1 +1,22 @@
-FROM python:3.12-slim\n\nENV PYTHONDONTWRITEBYTECODE=1 \\n    PYTHONUNBUFFERED=1 \\n    PIP_NO_CACHE_DIR=1 \\n    STREAMLIT_BROWSER_GATHER_USAGE_STATS=false\n\nWORKDIR /app\n\nCOPY requirements.txt .\nRUN python -m pip install --upgrade pip && \\n    python -m pip install --no-cache-dir -r requirements.txt\n\nCOPY . .\nRUN mkdir -p /app/data /app/models /app/reports\n\nEXPOSE 8501\n\nHEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \\n    CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8501/_stcore/health').read()"\n\nCMD ["sh", "-c", "streamlit run app.py --server.address=0.0.0.0 --server.port=${PORT:-8501} --server.headless=true --server.enableCORS=false --server.enableXsrfProtection=false"]
+FROM python:3.12-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN python -m pip install --upgrade pip && \
+    python -m pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+RUN mkdir -p /app/data /app/models /app/reports
+
+EXPOSE 8000
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health').read()"
+
+CMD ["sh", "-c", "uvicorn api:app --host 0.0.0.0 --port ${PORT:-8000}"]
