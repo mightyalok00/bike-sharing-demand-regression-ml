@@ -14,7 +14,6 @@
   <img src="https://img.shields.io/badge/Python-3.12%2B-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python"/>
   <img src="https://img.shields.io/badge/Scikit--learn-ML-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white" alt="Scikit-learn"/>
   <img src="https://img.shields.io/badge/Streamlit-App-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white" alt="Streamlit"/>
-  <img src="https://img.shields.io/badge/CI-GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white" alt="GitHub Actions"/>
   <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT License"/>
 </p>
 
@@ -250,7 +249,6 @@ bike-sharing-demand-regression-ml/
 ├── reports/                  # Generated evaluation/submission files
 │
 ├── .streamlit/              # Streamlit configuration
-├── .github/workflows/       # GitHub Actions CI
 │
 ├── requirements.txt          # Runtime dependencies
 ├── requirements-dev.txt      # Development/EDA/test dependencies
@@ -404,17 +402,15 @@ ruff check src bootstrap_model.py train_model.py tests
 
 ---
 
-## 🔄 Continuous Integration
+## 🧪 Local Quality Checks
 
-GitHub Actions automatically checks changes pushed to `main` and pull requests targeting `main`.
+The repository keeps quality checks lightweight and reproducible locally. Run them before committing:
 
-CI performs:
-
-1. Python 3.12 environment setup
-2. Dependency installation
-3. Ruff linting
-4. Pytest with coverage
-5. Python compilation validation
+```powershell
+ruff check src bootstrap_model.py train_model.py generate_submission.py tests
+pytest -q --cov=src --cov-report=term-missing
+python -m compileall -q src bootstrap_model.py train_model.py generate_submission.py
+```
 
 ---
 
@@ -428,7 +424,7 @@ This project follows several production-oriented practices:
 - **Reproducibility** — `RANDOM_STATE = 42` is used where supported
 - **Dependency separation** — runtime and development dependencies are maintained separately
 - **Automated testing** — core ML utilities are covered by tests
-- **CI validation** — linting, testing and compilation are automated
+- **Local quality checks** — linting, testing and compilation commands are documented
 - **Artifact separation** — generated models and reports are separated from source code
 
 ---
@@ -442,7 +438,7 @@ This project follows several production-oriented practices:
 - [x] Hyperparameter tuning
 - [x] Joblib serialization
 - [x] Streamlit application
-- [x] Automated CI tests
+- [x] Automated test suite
 - [x] MIT license
 - [ ] Add verified benchmark table from a reproducible training run
 - [ ] Add prediction analytics / model explainability
