@@ -90,12 +90,14 @@ def main():
         pred = np.maximum(0, np.expm1(pred_log))
         metrics = regression_metrics(y_holdout, pred)
 
-        rows.append({
-            "model": name,
-            "cv_rmse_log_mean": -scores.mean(),
-            "cv_rmse_log_std": scores.std(),
-            **metrics,
-        })
+        rows.append(
+            {
+                "model": name,
+                "cv_rmse_log_mean": -scores.mean(),
+                "cv_rmse_log_std": scores.std(),
+                **metrics,
+            }
+        )
 
     comparison = pd.DataFrame(rows).sort_values("RMSE")
     comparison.to_csv(COMPARISON_PATH, index=False)
@@ -141,12 +143,14 @@ def main():
     for name, model in tuned:
         pred = np.maximum(0, np.expm1(model.predict(X_holdout)))
         metrics = regression_metrics(y_holdout, pred)
-        rows.append({
-            "model": name,
-            "cv_rmse_log_mean": np.nan,
-            "cv_rmse_log_std": np.nan,
-            **metrics,
-        })
+        rows.append(
+            {
+                "model": name,
+                "cv_rmse_log_mean": np.nan,
+                "cv_rmse_log_std": np.nan,
+                **metrics,
+            }
+        )
 
     final_table = pd.DataFrame(rows).sort_values("RMSE").reset_index(drop=True)
     final_table.to_csv(COMPARISON_PATH, index=False)
