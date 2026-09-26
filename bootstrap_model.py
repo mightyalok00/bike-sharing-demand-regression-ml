@@ -8,7 +8,7 @@ import pandas as pd
 
 from src.config import MODEL_DIR, MODEL_PATH
 from src.features import prepare_features, split_feature_types
-from src.modeling import make_models
+from src.modeling import make_models, make_polynomial_pipeline
 
 LOGGER = logging.getLogger(__name__)
 
@@ -98,6 +98,11 @@ def build_model_catalog(train: pd.DataFrame | None = None):
     for name, model in models.items():
         model.fit(X, y)
         catalog[name] = model
+
+    catalog["Polynomial Regression"] = make_polynomial_pipeline(
+        numeric, categorical, degree=2
+    ).fit(X, y)
+
     return catalog
 
 
