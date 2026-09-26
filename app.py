@@ -440,18 +440,18 @@ with tab1:
             )
 
         st.markdown("#### 📊 Demand intensity")
-        demand_chart = pd.DataFrame(
-            {
-                "Predicted rentals": [pred],
-                "High-demand threshold": [600],
-                "Observed max": [OBSERVED_TARGET_MAX],
-            },
-            index=["Current scenario"],
+        progress = int(round((pred / OBSERVED_TARGET_MAX) * 100))
+        st.progress(
+            progress,
+            text=f"{pred:,.0f} rentals/hour • {progress}% of observed maximum",
         )
-        st.bar_chart(demand_chart, height=220)
+        threshold_a, threshold_b, threshold_c = st.columns(3)
+        threshold_a.metric("Low", "<100")
+        threshold_b.metric("High", "300–599")
+        threshold_c.metric("Observed max", "977")
         st.caption(
-            "Reference markers show the project's observed demand range; "
-            "they are not additional model outputs."
+            "The progress scale uses the project's observed target range "
+            "(0–977 rentals/hour)."
         )
 
         a, b, c = st.columns(3)
