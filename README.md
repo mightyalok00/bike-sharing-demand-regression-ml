@@ -130,6 +130,121 @@ The training workflow additionally performs hyperparameter search for:
 
 ---
 
+## 🏗️ Architecture
+
+BikePulse separates the application layer, machine-learning pipeline and reusable data/model components.
+
+```text
+                    ┌─────────────────────────┐
+                    │   Kaggle Bike Dataset   │
+                    │ train.csv / test.csv    │
+                    └────────────┬────────────┘
+                                 │
+                                 ▼
+                    ┌─────────────────────────┐
+                    │   src/data.py            │
+                    │ Load • Clean • Validate  │
+                    └────────────┬────────────┘
+                                 │
+                                 ▼
+                    ┌─────────────────────────┐
+                    │   src/features.py        │
+                    │ Datetime • Cyclical      │
+                    │ Leakage-safe features   │
+                    └────────────┬────────────┘
+                                 │
+                                 ▼
+                    ┌─────────────────────────┐
+                    │   src/modeling.py        │
+                    │ Preprocessing pipelines │
+                    │ Regression estimators   │
+                    └────────────┬────────────┘
+                                 │
+                    ┌────────────┴────────────┐
+                    ▼                         ▼
+          ┌──────────────────┐      ┌──────────────────┐
+          │ train_model.py   │      │ tests/           │
+          │ CV • tuning •    │      │ Automated checks │
+          │ evaluation       │      └──────────────────┘
+          └────────┬─────────┘
+                   │
+                   ▼
+          ┌──────────────────┐
+          │ models/*.joblib  │
+          │ reports/*.csv    │
+          └────────┬─────────┘
+                   │
+                   ▼
+          ┌──────────────────┐
+          │     app.py       │
+          │ Streamlit UI     │
+          │ Prediction +     │
+          │ Analytics        │
+          └──────────────────┘
+```
+
+### Architecture principles
+
+- **Separation of concerns** — data, features, modeling and evaluation live in reusable modules.
+- **Leakage-safe training** — post-outcome target fields are removed before modeling.
+- **Pipeline-based preprocessing** — transformations are kept with the estimator workflow.
+- **Reproducible training** — fixed random state and documented commands.
+- **Artifact isolation** — generated models and reports are kept outside the source modules.
+- **Testable components** — core data, feature, evaluation and modeling utilities have automated tests.
+
+---
+
+## ☁️ Deployment
+
+### Streamlit Community Cloud
+
+The production-facing demo is deployed as a **Streamlit Community Cloud** application.
+
+```text
+GitHub main branch
+       │
+       ▼
+Streamlit Community Cloud
+       │
+       ▼
+      app.py
+       │
+       ├── src/features.py
+       ├── src/modeling.py
+       └── saved model artifact
+       │
+       ▼
+Interactive BikePulse web app
+```
+
+**Entry point:** `app.py`
+
+**Live application:** [BikePulse](https://bike-sharing-demand-regression-ml.streamlit.app/)
+
+### Continuous Integration
+
+GitHub Actions validates the repository independently of the Streamlit deployment:
+
+```text
+Push / Pull Request / Manual Run
+                │
+                ▼
+        Install dependencies
+                │
+                ▼
+             Ruff
+                │
+                ▼
+       Pytest + coverage
+                │
+                ▼
+       Python compilation
+```
+
+This keeps deployment and code-quality validation separate: Streamlit serves the application, while GitHub Actions checks the codebase.
+
+---
+
 ## 🧩 Feature Engineering
 
 The project transforms the original datetime information into predictive calendar and cyclical features.
@@ -249,6 +364,7 @@ bike-sharing-demand-regression-ml/
 ├── models/                   # Generated model artifacts
 ├── reports/                  # Generated evaluation/submission files
 │
+├── .github/workflows/       # GitHub Actions CI
 ├── .streamlit/              # Streamlit configuration
 │
 ├── requirements.txt          # Runtime dependencies
