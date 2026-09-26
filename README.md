@@ -4,6 +4,8 @@ Production-style machine-learning project for the Kaggle Bike Sharing Demand dat
 
 ## 🚲 Live application
 
+**Live Streamlit dashboard:** https://bike-sharing-demand-regression-ml.streamlit.app/
+
 The Streamlit app provides an interactive BikePulse demand predictor with:
 - 🎛️ Sidebar filters
 - ⚡ Quick demand scenarios
@@ -12,7 +14,9 @@ The Streamlit app provides an interactive BikePulse demand predictor with:
 - 🌡️ Temperature, humidity and wind controls
 - 🔮 Hourly rental prediction
 - 📊 Demand-level indicators
+- 🧠 Regression-model selector
 - 🧠 Model information and leakage-protection notes
+- 🌑 Dark-mode dashboard
 
 ## Project structure
 
@@ -25,6 +29,9 @@ bike-sharing-demand-regression-ml/
 ├── requirements-dev.txt
 ├── Dockerfile
 ├── railway.toml
+├── api.py
+├── bootstrap_model.py
+├── .streamlit/
 ├── .dockerignore
 ├── .gitignore
 ├── README.md
@@ -119,16 +126,50 @@ Streamlit deployment intentionally uses the lightweight `requirements.txt`. The 
 
 Before deploying, ensure `models/final_model.joblib` is available to the application environment.
 
-## 🐳 Docker / Railway
+## 🚀 FastAPI / Railway
+
+The repository also includes a production-style FastAPI service for Railway.
+
+### API endpoints
+
+| Endpoint | Purpose |
+|---|---|
+| `GET /` | API status and service information |
+| `GET /health` | Railway health check |
+| `GET /models` | Available regression models and filter ranges |
+| `POST /predict` | Generate a bike-demand prediction |
+| `GET /docs` | Interactive Swagger API documentation |
+
+The API exposes the same prediction controls as the Streamlit dashboard, including date/time, season, weather, holiday, working day, temperature, feels-like temperature, humidity, wind speed, scenario, and regression-model selection.
+
+### Docker / Railway
 
 Build locally:
 
 ```bash
 docker build -t bike-sharing-demand .
-docker run -p 8501:8501 bike-sharing-demand
+docker run -p 8000:8000 bike-sharing-demand
 ```
 
-The Dockerfile automatically respects Railway's `PORT` environment variable.
+The Dockerfile automatically respects Railway's `PORT` environment variable and starts Uvicorn/FastAPI.
+
+Railway health check:
+
+```text
+/health
+```
+
+After deployment, open:
+
+```text
+https://YOUR-RAILWAY-DOMAIN/docs
+```
+
+for the interactive Swagger UI.
+
+## 🔐 License
+
+No `LICENSE` or `LICENSE.md` file is currently present in this repository, so this README does not claim a license. If you want to make the project open-source, add a license file (for example, MIT) explicitly.
 
 ## 🔐 Deployment dependency design
 
