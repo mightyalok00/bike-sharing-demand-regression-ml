@@ -68,18 +68,20 @@ def _synthetic_training_data(n_rows: int = 5000) -> pd.DataFrame:
         + noise,
     )
 
-    return pd.DataFrame({
-        "datetime": dates,
-        "season": season.astype(int),
-        "holiday": holiday.astype(int),
-        "workingday": workingday,
-        "weather": weather.astype(int),
-        "temp": temp,
-        "atemp": atemp,
-        "humidity": humidity,
-        "windspeed": windspeed,
-        "count": count,
-    })
+    return pd.DataFrame(
+        {
+            "datetime": dates,
+            "season": season.astype(int),
+            "holiday": holiday.astype(int),
+            "workingday": workingday,
+            "weather": weather.astype(int),
+            "temp": temp,
+            "atemp": atemp,
+            "humidity": humidity,
+            "windspeed": windspeed,
+            "count": count,
+        }
+    )
 
 
 def load_training_data() -> pd.DataFrame:
@@ -119,7 +121,9 @@ def _train(train: pd.DataFrame, model_name: str):
     }
     missing = required.difference(train.columns)
     if missing:
-        raise ValueError(f"Training dataset is missing columns: {sorted(missing)}")
+        raise ValueError(
+            f"Training dataset is missing columns: {sorted(missing)}"
+        )
 
     X = prepare_features(train)
     y = np.log1p(train["count"].astype(float))
