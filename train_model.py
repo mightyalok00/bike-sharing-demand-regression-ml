@@ -149,7 +149,7 @@ def main():
     importance.to_csv(IMPORTANCE_PATH, index=False)
 
     LOGGER.info("Saved final model to %s", MODEL_PATH)
-    LOGER.info("Saved comparison to %s", COMPARISON_PATH)
+    LOGGER.info("Saved comparison to %s", COMPARISON_PATH)
 
 
 if __name__ == "__main__":
