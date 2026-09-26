@@ -392,8 +392,8 @@ with tab1:
 
         st.markdown(
             f'<div class="prediction"><div style="font-size:1rem;opacity:.85;">'
-            f"PREDICTED HOURLY RENTALS</div><div class="value">"
-            f"{pred:,.0f} 🚲</div><div class="label">"
+            f"PREDICTED HOURLY RENTALS</div><div class='value'>"
+            f"{pred:,.0f} 🚲</div><div class='label'>"
             f"{icon} {level} &nbsp; • &nbsp; {advice}</div></div>",
             unsafe_allow_html=True,
         )

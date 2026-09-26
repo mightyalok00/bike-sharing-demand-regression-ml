@@ -7,3 +7,4 @@ data/*.csv
 reports/*.html
 reports/*.png
 *.log
+models/*.joblib
