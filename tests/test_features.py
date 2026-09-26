@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from src.features import prepare_features, add_datetime_features
+from src.features import add_datetime_features, prepare_features
 
 
 def sample_frame():
