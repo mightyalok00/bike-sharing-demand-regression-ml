@@ -2,12 +2,13 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
+
 import joblib
 import numpy as np
 import pandas as pd
 
-from src.config import MODEL_PATH, TEST_PATH, SAMPLE_PATH, REPORT_DIR
-from src.data import load_csv, validate_test, basic_clean
+from src.config import MODEL_PATH, REPORT_DIR, SAMPLE_PATH, TEST_PATH
+from src.data import basic_clean, load_csv, validate_test
 from src.features import prepare_features
 
 
@@ -33,10 +34,12 @@ def main():
     if "datetime" not in sample.columns:
         raise ValueError("sampleSubmission.csv must contain a datetime column.")
 
-    submission = pd.DataFrame({
-        "datetime": test["datetime"].dt.strftime("%Y-%m-%d %H:%M:%S"),
-        "count": prediction,
-    })
+    submission = pd.DataFrame(
+        {
+            "datetime": test["datetime"].dt.strftime("%Y-%m-%d %H:%M:%S"),
+            "count": prediction,
+        }
+    )
 
     if list(sample.columns) == ["datetime", "count"]:
         submission = submission[["datetime", "count"]]
