@@ -35,6 +35,7 @@ bike-sharing-demand-regression-ml/
 ├── .dockerignore
 ├── .gitignore
 ├── README.md
+├── LICENSE
 ├── data/
 ├── models/
 ├── reports/
@@ -169,7 +170,19 @@ for the interactive Swagger UI.
 
 ## 🔐 License
 
-No `LICENSE` or `LICENSE.md` file is currently present in this repository, so this README does not claim a license. If you want to make the project open-source, add a license file (for example, MIT) explicitly.
+### Original source code
+
+The original source code and project files authored for this repository are licensed under the **MIT License**. See the [LICENSE](LICENSE) file for the complete terms.
+
+### Kaggle dataset
+
+This project uses the **Kaggle Bike Sharing Demand** competition dataset. Kaggle lists the dataset license as **"Subject to Competition Rules"**, rather than MIT, Apache-2.0, or another general open-source license. citeturn0search1
+
+The raw Kaggle CSV files are **not redistributed in this repository**. Dataset access and use remain subject to the applicable Kaggle Competition Rules and Kaggle Terms of Use. citeturn0search0turn0search1
+
+**Dataset source:** [Kaggle — Bike Sharing Demand](https://www.kaggle.com/competitions/bike-sharing-demand/data)
+
+The MIT License in this repository applies to the **original code**, not to the Kaggle dataset or any third-party material.
 
 ## 🔐 Deployment dependency design
 
