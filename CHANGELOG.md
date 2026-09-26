@@ -13,7 +13,9 @@ All notable changes to **BikePulse** are documented here.
 
 ### Changed
 - Professionalized the README around the Streamlit deployment.
-- Removed obsolete API, Docker and Railway references.
+- Removed obsolete API, Docker, Railway and GitHub Actions references.
 - Added clearer ML pipeline, evaluation and engineering documentation.
 - Improved Streamlit UI copy and deployment metadata.
 - Added contributor guidance.
+- Added model analytics and explainability in the Streamlit application.
+- Fixed Ruff lint formatting and aligned documentation with the current deployment.
