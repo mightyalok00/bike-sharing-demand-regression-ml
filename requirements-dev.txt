@@ -1,7 +1,7 @@
 # Development / notebook-only dependencies
 -r requirements.txt
 matplotlib>=3.9,<4
-seaborn>=0.13,<1
+seaborn>=0.13.2,<1
 ydata-profiling>=4.12,<5
 jupyter>=1.1,<2
 nbformat>=5.10,<6
