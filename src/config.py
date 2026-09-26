@@ -1,9 +1,9 @@
 from pathlib import Path
 import os
 
-DEFAULT_WINDOWS_TRAIN = r"D:Bike	rain.csv"
-DEFAULT_WINDOWS_TEST = r"D:Bike	est.csv"
-DEFAULT_WINDOWS_SAMPLE = r"D:BikesampleSubmission.csv"
+DEFAULT_WINDOWS_TRAIN = r"D:/Bike/train.csv"
+DEFAULT_WINDOWS_TEST = r"D:/Bike/test.csv"
+DEFAULT_WINDOWS_SAMPLE = r"D:/Bike/sampleSubmission.csv"
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 MODEL_DIR = BASE_DIR / "models"
