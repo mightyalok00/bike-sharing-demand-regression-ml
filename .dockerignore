@@ -1,9 +1,0 @@
-__pycache__
-*.pyc
-.venv
-.git
-.gitignore
-.ipynb_checkpoints
-reports/*.html
-reports/*.png
-data/*.csv
