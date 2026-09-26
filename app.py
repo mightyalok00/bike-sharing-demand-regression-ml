@@ -120,6 +120,37 @@ def load_model_catalog():
 
     return build_model_catalog()
 
+@st.cache_data
+def load_training_report(filename: str) -> pd.DataFrame | None:
+    report_path = __import__("pathlib").Path("reports") / filename
+    if not report_path.exists():
+        return None
+    return pd.read_csv(report_path)
+
+
+def model_feature_importance(model) -> pd.DataFrame:
+    preprocessor = model.named_steps.get("preprocessor")
+    estimator = model.named_steps.get("model")
+    if preprocessor is None or estimator is None:
+        return pd.DataFrame(columns=["feature", "importance"])
+
+    names = preprocessor.get_feature_names_out()
+    if hasattr(estimator, "feature_importances_"):
+        values = estimator.feature_importances_
+    elif hasattr(estimator, "coef_"):
+        values = np.abs(np.ravel(estimator.coef_))
+    else:
+        return pd.DataFrame(columns=["feature", "importance"])
+
+    if len(names) != len(values):
+        return pd.DataFrame(columns=["feature", "importance"])
+
+    return (
+        pd.DataFrame({"feature": names, "importance": values})
+        .sort_values("importance", ascending=False)
+        .head(15)
+        .reset_index(drop=True)
+    )
 
 st.sidebar.header("🎛️ Prediction Filters")
 st.sidebar.caption("Tune the scenario, then press Predict demand.")
@@ -273,7 +304,7 @@ if selected_regression != "🤖 Saved / Final Model":
 
 st.sidebar.success(f"🤖 Active model: {model_name}")
 
-tab1, tab2 = st.tabs(["🔮 Predict Demand", "📌 Model Info"])
+tab1, tab2, tab3 = st.tabs(["🔮 Predict Demand", "📊 Analytics", "📌 Model Info"])
 
 with tab1:
     c1, c2, c3, c4 = st.columns(4)
@@ -382,6 +413,31 @@ with tab1:
         )
 
 with tab2:
+    st.markdown("### 📊 Model Analytics")
+    st.caption("Inspect the active model and any reproducible training reports generated locally.")
+
+    info_a, info_b, info_c = st.columns(3)
+    info_a.metric("🤖 Active model", model_name)
+    info_b.metric("🔢 Input features", len(selected_model.named_steps["preprocessor"].get_feature_names_out()))
+    info_c.metric("🎯 Target transform", "log1p → expm1")
+
+    importance = model_feature_importance(selected_model)
+    if not importance.empty:
+        st.markdown("#### 🔎 Top model features")
+        st.bar_chart(importance.set_index("feature")["importance"])
+        st.dataframe(importance, width="stretch", hide_index=True)
+    else:
+        st.info("Feature importance is not exposed by this model type. Try a tree-based model such as Random Forest or Gradient Boosting.")
+
+    comparison = load_training_report("model_comparison.csv")
+    if comparison is not None and not comparison.empty:
+        st.markdown("#### 🏁 Training benchmark")
+        display_columns = [c for c in ["model", "RMSE", "MAE", "R2", "cv_rmse_log_mean"] if c in comparison.columns]
+        st.dataframe(comparison[display_columns].sort_values("RMSE"), width="stretch", hide_index=True)
+    else:
+        st.info("No training report is available in this deployment. Run train_model.py on the Kaggle dataset to generate reports/model_comparison.csv.")
+
+with tab3:
     st.markdown("### 🧠 About this model")
     st.markdown(
         f'<div class="card"><b>Model:</b> {model_name}<br>'
