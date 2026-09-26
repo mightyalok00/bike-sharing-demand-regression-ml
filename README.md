@@ -14,6 +14,7 @@
   <img src="https://img.shields.io/badge/Python-3.12%2B-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python"/>
   <img src="https://img.shields.io/badge/Scikit--learn-ML-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white" alt="Scikit-learn"/>
   <img src="https://img.shields.io/badge/Streamlit-App-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white" alt="Streamlit"/>
+  <img src="https://img.shields.io/github/actions/workflow/status/mightyalok00/bike-sharing-demand-regression-ml/ci.yml?branch=main&style=for-the-badge&label=CI" alt="CI"/>
   <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT License"/>
 </p>
 
@@ -399,6 +400,12 @@ Run Ruff:
 ```powershell
 ruff check src bootstrap_model.py train_model.py tests
 ```
+
+---
+
+## 🔄 Continuous Integration
+
+GitHub Actions runs the same lint, test and compilation checks on pushes and pull requests. The workflow also includes `workflow_dispatch`, so you can manually run it from **GitHub → Actions → CI → Run workflow**.
 
 ---
 
