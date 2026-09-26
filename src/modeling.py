@@ -1,23 +1,20 @@
 from __future__ import annotations
 
 import logging
-from typing import Dict
 
-import numpy as np
-import pandas as pd
 from sklearn.compose import ColumnTransformer
+from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import ElasticNet, Lasso, LinearRegression, Ridge
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, PolynomialFeatures, StandardScaler
 from sklearn.tree import DecisionTreeRegressor
-from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 
 LOGGER = logging.getLogger(__name__)
 
 
 def make_preprocessor(numeric, categorical, scaler="standard"):
-    scaler_obj = StandardScaler() if scaler == "standard" else StandardScaler()
+    scaler_obj = StandardScaler()
 
     numeric_pipe = Pipeline([
         ("imputer", SimpleImputer(strategy="median")),
@@ -35,7 +32,7 @@ def make_preprocessor(numeric, categorical, scaler="standard"):
     ], remainder="drop", verbose_feature_names_out=False)
 
 
-def make_models(numeric, categorical) -> Dict[str, Pipeline]:
+def make_models(numeric, categorical) -> dict[str, Pipeline]:
     prep = make_preprocessor(numeric, categorical)
 
     models = {
@@ -47,12 +44,18 @@ def make_models(numeric, categorical) -> Dict[str, Pipeline]:
             random_state=42, max_depth=20, min_samples_leaf=2
         ),
         "Random Forest Regression": RandomForestRegressor(
-            n_estimators=250, random_state=42, n_jobs=-1,
-            max_depth=None, min_samples_leaf=1
+            n_estimators=250,
+            random_state=42,
+            n_jobs=-1,
+            max_depth=None,
+            min_samples_leaf=1,
         ),
         "Gradient Boosting Regression": GradientBoostingRegressor(
-            random_state=42, n_estimators=200, learning_rate=0.05,
-            max_depth=3, loss="huber"
+            random_state=42,
+            n_estimators=200,
+            learning_rate=0.05,
+            max_depth=3,
+            loss="huber",
         ),
     }
 
