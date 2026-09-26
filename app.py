@@ -53,11 +53,32 @@ def load_model_bundle():
     return build_fallback_model()
 
 bundle = load_model_bundle()
-model = bundle["model"]
-model_name = bundle.get("model_name", "Unknown")
+saved_model = bundle["model"]
+saved_model_name = bundle.get("model_name", "Unknown")
+
+@st.cache_resource
+def load_model_catalog():
+    from bootstrap_model import build_model_catalog
+    return build_model_catalog()
 
 st.sidebar.header("🎛️ Prediction Filters")
 st.sidebar.caption("Tune the scenario, then press Predict demand.")
+regression_options = [
+    "🤖 Saved / Final Model",
+    "📈 Linear Regression",
+    "🛡️ Ridge Regression",
+    "🎯 Lasso Regression",
+    "🔗 Elastic Net",
+    "🌳 Decision Tree Regression",
+    "🌲 Random Forest Regression",
+    "🚀 Gradient Boosting Regression",
+]
+selected_regression = st.sidebar.selectbox(
+    "🧠 Regression Model",
+    regression_options,
+    help="Choose which regression algorithm powers the prediction.",
+)
+
 scenario = st.sidebar.selectbox("⚡ Quick scenario", ["Custom", "🌅 Morning commute", "🏙️ Workday evening", "🌤️ Weekend afternoon", "🌙 Night / low demand"])
 scenario_defaults = {
     "Custom": {"hour": 8, "temp": 20.0, "humidity": 60.0, "windspeed": 10.0, "workingday": 1, "season": 1, "weather": 1},
@@ -80,7 +101,20 @@ atemp = st.sidebar.slider("🧥 Feels-like (°C)", -10.0, 50.0, float(temp + 2.0
 humidity = st.sidebar.slider("💧 Humidity (%)", 0.0, 100.0, float(defaults["humidity"]), 1.0)
 windspeed = st.sidebar.slider("💨 Wind speed", 0.0, 60.0, float(defaults["windspeed"]), 0.5)
 st.sidebar.divider()
-st.sidebar.success(f"🤖 Model loaded: {model_name}")
+selected_model = saved_model
+model_name = saved_model_name
+
+if selected_regression != "🤖 Saved / Final Model":
+    try:
+        model_catalog = load_model_catalog()
+        model_name = selected_regression.replace("📈 ", "").replace("🛡️ ", "").replace("🎯 ", "").replace("🔗 ", "").replace("🌳 ", "").replace("🌲 ", "").replace("🚀 ", "")
+        selected_model = model_catalog[model_name]
+    except Exception as exc:
+        st.sidebar.error(f"Model filter unavailable: {exc}")
+        selected_model = saved_model
+        model_name = saved_model_name
+
+st.sidebar.success(f"🤖 Active model: {model_name}")
 
 tab1, tab2 = st.tabs(["🔮 Predict Demand", "📌 Model Info"])
 with tab1:
@@ -99,7 +133,7 @@ with tab1:
         raw = pd.DataFrame([{"datetime":timestamp,"season":season,"holiday":holiday,"workingday":workingday,"weather":weather,"temp":temp,"atemp":atemp,"humidity":humidity,"windspeed":windspeed}])
         try:
             X = prepare_features(raw)
-            pred = max(0.0, float(np.expm1(model.predict(X)[0])))
+            pred = max(0.0, float(np.expm1(selected_model.predict(X)[0])))
         except Exception as exc:
             st.error(f"❌ Prediction failed: {exc}")
             st.stop()
