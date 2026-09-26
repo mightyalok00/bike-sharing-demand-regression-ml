@@ -91,7 +91,7 @@ st.markdown(
     """
 <div class="hero">
   <h1>🚲 BikePulse Demand Predictor</h1>
-  <p>Turn time + weather conditions into an hourly bike-rental demand forecast.</p>
+  <p>Predict hourly bike-rental demand from time, weather, and calendar conditions.</p>
 </div>
 """,
     unsafe_allow_html=True,
@@ -119,6 +119,7 @@ def load_model_catalog():
     from bootstrap_model import build_model_catalog
 
     return build_model_catalog()
+
 
 @st.cache_data
 def load_training_report(filename: str) -> pd.DataFrame | None:
@@ -151,6 +152,29 @@ def model_feature_importance(model) -> pd.DataFrame:
         .head(15)
         .reset_index(drop=True)
     )
+
+
+def final_model_benchmark(
+    comparison: pd.DataFrame | None,
+) -> pd.DataFrame | None:
+    if comparison is None or comparison.empty:
+        return None
+
+    if "model" in comparison.columns:
+        matches = comparison[
+            comparison["model"].astype(str).str.lower()
+            == saved_model_name.lower()
+        ]
+        if matches.empty:
+            matches = comparison[
+                comparison["model"].astype(str).str.lower()
+                == "tuned random forest"
+            ]
+        if not matches.empty:
+            return matches.iloc[0].to_frame().T
+
+    return None
+
 
 st.sidebar.header("🎛️ Prediction Filters")
 st.sidebar.caption("Tune the scenario, then press Predict demand.")
@@ -329,7 +353,7 @@ with tab1:
     st.markdown(
         f'<div class="card"><b>📅 {date.strftime("%A, %d %B %Y")}</b> '
         f'&nbsp; • &nbsp; <b>🕐 {hour:02d}:{minute:02d}</b> '
-        f"&nbsp; • &nbsp; <b>{season_name}</b> "
+        f'&nbsp; • &nbsp; <b>{season_name}</b> '
         f'&nbsp; • &nbsp; <b>{weather_name}</b></div>',
         unsafe_allow_html=True,
     )
@@ -399,6 +423,21 @@ with tab1:
         )
         st.write("")
 
+        st.markdown("#### 📊 Demand intensity")
+        demand_chart = pd.DataFrame(
+            {
+                "Predicted rentals": [pred],
+                "High-demand threshold": [600],
+                "Very-high reference": [1000],
+            },
+            index=["Current scenario"],
+        )
+        st.bar_chart(demand_chart, height=220)
+        st.caption(
+            "Reference markers help put the predicted hourly demand into context; "
+            "they are not model outputs."
+        )
+
         a, b, c = st.columns(3)
         a.metric("📈 Demand level", level)
         b.metric("🎯 Model", model_name)
@@ -415,15 +454,31 @@ with tab1:
 with tab2:
     st.markdown("### 📊 Model Analytics")
     st.caption(
-        "Inspect the active model and any reproducible training reports "
-        "generated locally."
+        "Inspect the active model and reproducible training benchmarks "
+        "generated from the project training pipeline."
     )
 
     info_a, info_b, info_c = st.columns(3)
     info_a.metric("🤖 Active model", model_name)
-    feature_count = len(        selected_model.named_steps["preprocessor"].get_feature_names_out()    )
+    feature_count = len(
+        selected_model.named_steps["preprocessor"].get_feature_names_out()
+    )
     info_b.metric("🔢 Input features", feature_count)
     info_c.metric("🎯 Target transform", "log1p → expm1")
+
+    comparison = load_training_report("model_comparison.csv")
+    benchmark = final_model_benchmark(comparison)
+
+    if benchmark is not None:
+        st.markdown("#### 🏆 Final model benchmark")
+        perf_a, perf_b, perf_c = st.columns(3)
+        perf_a.metric("RMSE", f"{float(benchmark.iloc[0]['RMSE']):.2f}")
+        perf_b.metric("MAE", f"{float(benchmark.iloc[0]['MAE']):.2f}")
+        perf_c.metric("R²", f"{float(benchmark.iloc[0]['R2']) * 100:.2f}%")
+        st.caption(
+            f"Verified holdout metrics for {benchmark.iloc[0]['model']}. "
+            "The full model comparison is shown below."
+        )
 
     importance = model_feature_importance(selected_model)
     if not importance.empty:
@@ -436,9 +491,8 @@ with tab2:
             "Try a tree-based model such as Random Forest or Gradient Boosting."
         )
 
-    comparison = load_training_report("model_comparison.csv")
     if comparison is not None and not comparison.empty:
-        st.markdown("#### 🏁 Training benchmark")
+        st.markdown("#### 🏁 Training benchmark comparison")
         display_columns = [
             c for c in ["model", "RMSE", "MAE", "R2", "cv_rmse_log_mean"]
             if c in comparison.columns
