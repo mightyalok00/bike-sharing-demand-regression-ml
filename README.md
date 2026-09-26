@@ -48,10 +48,10 @@ The app provides:
 The selected showcase image is the **full BikePulse prediction screen**: it clearly shows the prediction controls, scenario summary, predicted rentals, demand interpretation, model selection and output guard in one view.
 
 <p align="center">
-  <img src="docs/images/bikepulse-dashboard.png" alt="BikePulse Demand Predictor Streamlit application" width="100%"/>
+  <img src="docs/images/bikepulse-dashboard.jpg" alt="BikePulse Demand Predictor Streamlit application" width="100%"/>
 </p>
 
-> **Screenshot:** Save the selected Streamlit screenshot as `docs/images/bikepulse-dashboard.png` in the repository so GitHub renders the preview above.
+> **Screenshot:** Add the selected Streamlit screenshot at `docs/images/bikepulse-dashboard.jpg` so GitHub renders the preview above.
 
 ---
 
