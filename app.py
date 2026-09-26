@@ -12,13 +12,33 @@ st.set_page_config(page_title="BikePulse • Demand Predictor", page_icon="🚲"
 
 st.markdown("""
 <style>
-.stApp { background: linear-gradient(135deg, #f7fbff 0%, #eef5ff 45%, #f8fbff 100%); }
-.hero { padding: 1.4rem 1.6rem; border-radius: 22px; background: linear-gradient(120deg, #0f172a, #1e3a8a); color: white; margin-bottom: 1.2rem; box-shadow: 0 12px 30px rgba(15,23,42,.16); }
-.hero h1 { margin: 0; font-size: 2.35rem; } .hero p { margin: .35rem 0 0; opacity: .86; }
-.card { padding: 1rem 1.15rem; border-radius: 16px; background: rgba(255,255,255,.88); border: 1px solid rgba(148,163,184,.22); box-shadow: 0 8px 22px rgba(15,23,42,.06); }
-.prediction { padding: 1.35rem; border-radius: 20px; background: linear-gradient(135deg, #0b3b60, #0f766e); color: white; text-align: center; box-shadow: 0 14px 32px rgba(15,118,110,.18); }
-.prediction .value { font-size: 3.1rem; font-weight: 800; line-height: 1; } .prediction .label { opacity: .82; margin-top: .45rem; }
-div[data-testid="stMetric"] { background: rgba(255,255,255,.82); border-radius: 14px; padding: .75rem; border: 1px solid rgba(148,163,184,.20); }
+.stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
+    background: #0b1220 !important;
+    color: #f8fafc !important;
+}
+[data-testid="stSidebar"] {
+    background: #0f172a !important;
+    border-right: 1px solid #1f2937;
+}
+[data-testid="stSidebar"] * { color: #f8fafc !important; }
+[data-testid="stSidebar"] input, [data-testid="stSidebar"] textarea,
+[data-testid="stSidebar"] [data-baseweb="select"] > div {
+    background: #111827 !important;
+    color: #f8fafc !important;
+    border-color: #374151 !important;
+}
+.block-container { padding-top: 2rem; }
+.hero { padding: 1.4rem 1.6rem; border-radius: 22px; background: linear-gradient(120deg, #111827, #172554); color: #f8fafc; margin-bottom: 1.2rem; border: 1px solid #263449; box-shadow: 0 12px 30px rgba(0,0,0,.35); }
+.hero h1 { margin: 0; font-size: 2.35rem; color: #f8fafc; } .hero p { margin: .35rem 0 0; color: #cbd5e1; }
+.card { padding: 1rem 1.15rem; border-radius: 16px; background: #111827; color: #f8fafc; border: 1px solid #263449; box-shadow: 0 8px 22px rgba(0,0,0,.25); }
+.prediction { padding: 1.35rem; border-radius: 20px; background: linear-gradient(135deg, #064e3b, #0f766e); color: #f8fafc; text-align: center; box-shadow: 0 14px 32px rgba(0,0,0,.35); }
+.prediction .value { font-size: 3.1rem; font-weight: 800; line-height: 1; } .prediction .label { opacity: .9; margin-top: .45rem; }
+div[data-testid="stMetric"] { background: #111827 !important; color: #f8fafc !important; border-radius: 14px; padding: .75rem; border: 1px solid #263449; }
+div[data-testid="stMetric"] label, div[data-testid="stMetric"] [data-testid="stMetricValue"] { color: #f8fafc !important; }
+.stMarkdown, .stCaption, p, label, [data-testid="stText"] { color: #e5e7eb; }
+[data-testid="stExpander"] { background: #111827; border: 1px solid #263449; border-radius: 14px; }
+[data-testid="stDataFrame"] { border: 1px solid #263449; }
+button[kind="primary"] { border-radius: 12px; font-weight: 700; }
 </style>""", unsafe_allow_html=True)
 
 st.markdown("""<div class="hero"><h1>🚲 BikePulse Demand Predictor</h1><p>Turn time + weather conditions into an hourly bike-rental demand forecast.</p></div>""", unsafe_allow_html=True)
