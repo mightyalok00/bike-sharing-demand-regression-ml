@@ -56,7 +56,7 @@ def main():
     y = train["count"].astype(float)
 
     # Q11-15: holdout and cross-validation.
-    X_train, X_holdout, y_train, y_holdout = train_test_split(
+    X_train, X_holdout, y_train, _ = train_test_split(
         X_all, y, test_size=TEST_SIZE, random_state=RANDOM_STATE
     )
 
