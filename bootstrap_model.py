@@ -131,7 +131,7 @@ def _train(train: pd.DataFrame, model_name: str):
     X = prepare_features(train)
     y = np.log1p(train["count"].astype(float))
     numeric, categorical = split_feature_types(X)
-    model = make_models(numeric, categorical)["Gradient Boosting Regression"]
+    model = make_models(numeric, categorical)["Random Forest Regression"]
     model.fit(X, y)
 
     MODEL_DIR.mkdir(parents=True, exist_ok=True)
@@ -147,8 +147,8 @@ def _train(train: pd.DataFrame, model_name: str):
 def build_fallback_model():
     train = load_training_data()
     label = (
-        "Gradient Boosting Regression • Cloud fallback"
+        "Random Forest Regression • Cloud fallback"
         if "TeamLab" in DATA_URL
-        else "Gradient Boosting Regression • Offline fallback"
+        else "Random Forest Regression • Offline fallback"
     )
     return _train(train, label)
