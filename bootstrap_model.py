@@ -18,7 +18,7 @@ DATA_URL = "https://raw.githubusercontent.com/TeamLab/machine_learning_from_scra
 
 
 def _synthetic_training_data(n_rows: int = 5000) -> pd.DataFrame:
-    """Deterministic emergency dataset so the demo still works without network access."""
+    """Deterministic emergency dataset for offline operation."""
     rng = np.random.default_rng(42)
     dates = pd.date_range("2011-01-01", periods=n_rows, freq="h")
     hour = dates.hour.to_numpy()
