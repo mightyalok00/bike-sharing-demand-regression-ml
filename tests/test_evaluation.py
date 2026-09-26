@@ -13,6 +13,5 @@ def test_regression_metrics_are_correct():
 
 
 def test_regression_metrics_rejects_nan_predictions():
-    metrics = regression_metrics([1, 2], [1, np.nan])
-
-    assert not np.isfinite(metrics["RMSE"])
+    with pytest.raises(ValueError):
+        regression_metrics([1, 2], [1, np.nan])
