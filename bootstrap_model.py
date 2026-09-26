@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from urllib.error import URLError
 
 import joblib
 import numpy as np
@@ -27,7 +28,12 @@ def _synthetic_training_data(n_rows: int = 5000) -> pd.DataFrame:
     temp = 8 + 18 * np.sin(2 * np.pi * (month - 1) / 12) + rng.normal(0, 2.5, n_rows)
     temp = np.clip(temp, -5, 38)
     atemp = temp + rng.normal(1.5, 1.0, n_rows)
-    humidity = np.clip(72 - 18 * np.sin(2 * np.pi * (month - 1) / 12) + rng.normal(0, 8, n_rows), 15, 100)
+    humidity = np.clip(
+        72 - 18 * np.sin(2 * np.pi * (month - 1) / 12)
+        + rng.normal(0, 8, n_rows),
+        15,
+        100,
+    )
     windspeed = np.clip(rng.normal(12, 5, n_rows), 0, 45)
     workingday = (weekday < 5).astype(int)
     holiday = ((weekday == 6) & (rng.random(n_rows) < 0.12)).astype(int)
@@ -50,12 +56,12 @@ def _synthetic_training_data(n_rows: int = 5000) -> pd.DataFrame:
     weekend_effect = np.where(workingday == 1, 1.0, 0.78)
     weather_effect = np.where(weather == 1, 1.0, np.where(weather == 2, 0.82, 0.58))
     seasonal_effect = 1.0 + 0.18 * np.sin(2 * np.pi * (month - 3) / 12)
-    trend = np.linspace(0.75, 1.25, n_rows)
     noise = rng.normal(0, 22, n_rows)
 
     count = np.maximum(
         0,
-        25 + commute * weekend_effect * weather_effect
+        25
+        + commute * weekend_effect * weather_effect
         + 5.5 * temp * seasonal_effect
         + 0.7 * (100 - humidity)
         + 35 * seasonal_effect
@@ -79,7 +85,7 @@ def _synthetic_training_data(n_rows: int = 5000) -> pd.DataFrame:
 def load_training_data() -> pd.DataFrame:
     try:
         return pd.read_csv(DATA_URL)
-    except Exception as exc:
+    except (OSError, URLError, ValueError) as exc:
         LOGGER.warning("Public training-data bootstrap failed: %s", exc)
         return _synthetic_training_data()
 
