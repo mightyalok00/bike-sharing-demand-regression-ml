@@ -414,11 +414,15 @@ with tab1:
 
 with tab2:
     st.markdown("### 📊 Model Analytics")
-    st.caption("Inspect the active model and any reproducible training reports generated locally.")
+    st.caption(
+        "Inspect the active model and any reproducible training reports "
+        "generated locally."
+    )
 
     info_a, info_b, info_c = st.columns(3)
     info_a.metric("🤖 Active model", model_name)
-    info_b.metric("🔢 Input features", len(selected_model.named_steps["preprocessor"].get_feature_names_out()))
+    feature_count = len(        selected_model.named_steps["preprocessor"].get_feature_names_out()    )
+    info_b.metric("🔢 Input features", feature_count)
     info_c.metric("🎯 Target transform", "log1p → expm1")
 
     importance = model_feature_importance(selected_model)
@@ -427,15 +431,29 @@ with tab2:
         st.bar_chart(importance.set_index("feature")["importance"])
         st.dataframe(importance, width="stretch", hide_index=True)
     else:
-        st.info("Feature importance is not exposed by this model type. Try a tree-based model such as Random Forest or Gradient Boosting.")
+        st.info(
+            "Feature importance is not exposed by this model type. "
+            "Try a tree-based model such as Random Forest or Gradient Boosting."
+        )
 
     comparison = load_training_report("model_comparison.csv")
     if comparison is not None and not comparison.empty:
         st.markdown("#### 🏁 Training benchmark")
-        display_columns = [c for c in ["model", "RMSE", "MAE", "R2", "cv_rmse_log_mean"] if c in comparison.columns]
-        st.dataframe(comparison[display_columns].sort_values("RMSE"), width="stretch", hide_index=True)
+        display_columns = [
+            c for c in ["model", "RMSE", "MAE", "R2", "cv_rmse_log_mean"]
+            if c in comparison.columns
+        ]
+        st.dataframe(
+            comparison[display_columns].sort_values("RMSE"),
+            width="stretch",
+            hide_index=True,
+        )
     else:
-        st.info("No training report is available in this deployment. Run train_model.py on the Kaggle dataset to generate reports/model_comparison.csv.")
+        st.info(
+            "No training report is available in this deployment. "
+            "Run train_model.py on the Kaggle dataset to generate "
+            "reports/model_comparison.csv."
+        )
 
 with tab3:
     st.markdown("### 🧠 About this model")
